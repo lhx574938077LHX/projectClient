@@ -1,0 +1,68 @@
+﻿<%@ CodeTemplate Language="C#" TargetLanguage="XML" Debug="True" OutputType="None" Description="Generates simplistic entity objects from an entity map file." %>
+<%@ Register Name="CreateTableTemplate" Template="B生成Mapper.cst" %>
+<%@ XmlProperty Name="CommonEntity" Schema="CommonEntity.xsd" Optional="True"  Default="TableEntity.xml" Description="实体类对象XML描述文档" %>
+<%@ Assembly Name="System.Design" %>
+<%@ Import NameSpace="System.IO" %>
+<%@ Assembly Name="SchemaExplorer" %>
+<%@ Assembly Name="CodeSmith.BaseTemplates" %>
+<%@ Assembly Name="System.Design" %>
+<%@ Assembly Name="CodeSmith.CustomProperties" %>
+<%@ Import Namespace="SchemaExplorer" %>
+<%@ Import Namespace="System.Windows.Forms.Design"%>
+<%@ Import Namespace="CodeSmith.CustomProperties" %>
+
+<%@ Assembly Src="Common.cs" %>
+<%@ Import Namespace="Com.IceFox.Utils" %>
+
+<script runat="template">
+    private string _outputDirectory = String.Empty;
+
+    [Editor(typeof(System.Windows.Forms.Design.FolderNameEditor), typeof(System.Drawing.Design.UITypeEditor))] 
+    [Optional]
+    [Category("Output")]
+    [Description("The directory to output the results to.")]
+    public string OutputDirectory 
+    {
+    	get
+    	{
+    		return "..\\..\\jyzxclient_dao\\src\\main\\java\\";
+    	}
+    	set
+    	{
+    		_outputDirectory = value;
+    	}
+    }
+
+    public string InitialToOpper(string v)
+    {
+      if(string.IsNullOrEmpty(v))return v;
+      return v.Substring(0, 1).ToUpper() + (v.Length>1?v.Substring(1).ToLower():"");
+    }
+
+    public override void Render(TextWriter writer)
+    {
+    	string outputDirectory = Path.Combine(this.CodeTemplateInfo.DirectoryName, _outputDirectory);
+    	if (!outputDirectory.EndsWith("\\")) outputDirectory += "\\";
+    	if (!Directory.Exists(outputDirectory)) Directory.CreateDirectory(outputDirectory);
+    	
+        foreach(Entity entity in CommonEntity.Entities)
+        {
+    		Trace.WriteLine("正在生成(" + Common.ConvertOTJ(entity.Name) + "Mapper.xml" + ") 文件。");
+    		CreateTableTemplate template = new CreateTableTemplate();
+    		template.EntityName = entity.Name;
+            template.CommonEntity = CommonEntity;
+    		
+    		PreserveRegionsMergeStrategy strategy = new PreserveRegionsMergeStrategy("^[ \t]*(?i:Custom)", "T-SQL");
+            
+            string packageDirectory = entity.Namespace+(String.IsNullOrEmpty(entity.SubPackage)?"":"." + "\\mapping\\" +entity.SubPackage);
+            packageDirectory = String.Join("\\",packageDirectory.Split('.'));
+            packageDirectory = outputDirectory + packageDirectory + "\\";
+            if(!Directory.Exists(packageDirectory))
+            {
+                Directory.CreateDirectory(packageDirectory);
+            }
+            
+    		template.RenderToFile(packageDirectory + Common.ConvertOTJ(entity.Name) + "Mapper.xml", strategy);
+    	}
+    }
+</script>

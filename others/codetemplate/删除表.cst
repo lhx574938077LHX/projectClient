@@ -1,0 +1,47 @@
+﻿<%@ CodeTemplate Language="C#" TargetLanguage="T-SQL" Description="删除表" %>
+<%@ XmlProperty Name="CommonEntity" Schema="CommonEntity.xsd" Optional="True"  Default="TableEntity.xml" Description="实体类对象XML描述文档" %>
+<%@ Property Name="EntityName" Type="System.String" Optional="True" Category="Context" Description="实体类名" %>
+
+<%@ Assembly Src="Common.cs" %>
+<%@ Import Namespace="Com.IceFox.Utils" %>
+
+<%
+    foreach(Entity entity in CommonEntity.Entities)
+    {
+        if(entity.Name == EntityName)
+        {
+%>
+-------------------------------------<%=entity.Name%>---------------------------------------
+--删除表
+DECLARE t_num NUMBER;
+BEGIN
+  SELECT COUNT(1) INTO t_num FROM user_tables WHERE table_name='<%=entity.Name%>';
+  IF t_num = 1 THEN
+    EXECUTE IMMEDIATE 'DROP TABLE "<%=entity.Name%>"';
+  END IF;
+END;
+/
+<%
+    for(int i=0;i<entity.Properties.Count;i++){
+		if(entity.Properties[i].Identity){
+%>
+--删除序列
+DECLARE s_num NUMBER;
+BEGIN
+  SELECT COUNT(1) INTO s_num FROM user_sequences WHERE sequence_name= '<%=entity.Name.ToUpper()%>_<%=entity.Properties[i].Name.ToUpper()%>_SEQUENCE';
+  IF s_num = 1 THEN
+    EXECUTE IMMEDIATE 'DROP SEQUENCE <%=entity.Name.ToUpper()%>_<%=entity.Properties[i].Name.ToUpper()%>_SEQUENCE';
+  END IF;
+END;
+<%
+		}
+    }
+%>
+
+<%
+        }
+    }
+%>
+
+<script runat="template">
+</script>

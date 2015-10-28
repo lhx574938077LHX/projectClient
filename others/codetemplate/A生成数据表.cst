@@ -1,0 +1,141 @@
+﻿<%@ CodeTemplate Language="C#" TargetLanguage="T-SQL" Description="1.生成数据表" %>
+<%@ XmlProperty Name="CommonEntity" Schema="CommonEntity.xsd" Optional="True"  Default="TableEntity.xml" Description="实体类对象XML描述文档" %>
+<%@ Property Name="EntityName" Type="System.String" Optional="True" Category="Context" Description="实体类名" %>
+<%@ Property Name="EnableInsertTrigger" Type="System.Boolean" Optional="True" Default="False" Category="Context" Description="是否生成INSERT触发" %>
+
+<%@ Assembly Src="Common.cs" %>
+<%@ Import Namespace="Com.IceFox.Utils" %>
+
+<%
+    foreach(Entity entity in CommonEntity.Entities)
+    {
+        if(entity.Name == EntityName)
+        {
+%>
+-------------------------------------<%=entity.Name%>---------------------------------------
+--建表
+DECLARE t_num NUMBER;
+BEGIN
+  SELECT COUNT(1) INTO t_num FROM user_tables WHERE table_name='<%=entity.Name%>';
+  IF t_num = 1 THEN
+    EXECUTE IMMEDIATE 'DROP TABLE "<%=entity.Name%>"';
+  END IF;
+END;
+/
+CREATE TABLE "<%=entity.Name%>" 
+(	
+<%
+    for(int i=0;i<entity.Properties.Count;i++){
+%>
+	"<%=entity.Properties[i].Name%>" <%=entity.Properties[i].DbType%><%=GetColumnSize(entity.Properties[i])%><%=String.IsNullOrEmpty(entity.Properties[i].DefaultValue)?"":" DEFAULT '"+entity.Properties[i].DefaultValue+"'"%><%=entity.Properties[i].AllowNull?" NULL":" NOT NULL"%><%=entity.Properties[i].PrimaryKey?" PRIMARY KEY":""%><%=i!=entity.Properties.Count-1?",":""%>
+<%
+    }
+%>
+);
+--设置字段备注
+<%
+    for(int i=0;i<entity.Properties.Count;i++){
+%>
+COMMENT ON COLUMN "<%=entity.Name%>"."<%=entity.Properties[i].Name%>" IS '<%=entity.Properties[i].Remark%>';
+<%
+    }
+%>
+<%
+    for(int i=0;i<entity.Properties.Count;i++){
+		if(entity.Properties[i].Identity){
+%>
+--创建序列
+DECLARE s_num NUMBER;
+BEGIN
+  SELECT COUNT(1) INTO s_num FROM user_sequences WHERE sequence_name= '<%=entity.Name.ToUpper()%>_<%=entity.Properties[i].Name.ToUpper()%>_SEQUENCE';
+  IF s_num = 1 THEN
+    EXECUTE IMMEDIATE 'DROP SEQUENCE <%=entity.Name.ToUpper()%>_<%=entity.Properties[i].Name.ToUpper()%>_SEQUENCE';
+  END IF;
+END;
+/
+CREATE SEQUENCE <%=entity.Name.ToUpper()%>_<%=entity.Properties[i].Name.ToUpper()%>_SEQUENCE
+INCREMENT BY <%=entity.Properties[i].IdentityIncrement%>  --每次增加几个
+MINVALUE 1      --最小值为1
+NOMAXVALUE      --不限制最大值
+START WITH <%=entity.Properties[i].IdentitySeed%>    --从1开始
+CACHE 10        --缓存
+ORDER;
+<%
+		}
+    }
+    
+    if(EnableInsertTrigger)
+    {
+%>
+--创建INSERT触发器
+<%
+        for(int i=0;i<entity.Properties.Count;i++){
+    		if(entity.Properties[i].Identity){
+%>
+DECLARE t_num NUMBER;
+BEGIN
+  SELECT COUNT(1) INTO t_num FROM user_triggers WHERE trigger_name='<%=entity.Name.ToUpper()%>_<%=entity.Properties[i].Name.ToUpper()%>_INSERT_TRIGGER';
+  IF t_num = 1 THEN
+    EXECUTE IMMEDIATE 'DROP TRIGGER <%=entity.Name.ToUpper()%>_<%=entity.Properties[i].Name.ToUpper()%>_INSERT_TRIGGER';
+  END IF;
+END;
+/
+CREATE TRIGGER <%=entity.Name.ToUpper()%>_<%=entity.Properties[i].Name.ToUpper()%>_INSERT_TRIGGER
+BEFORE INSERT ON EXAMPLE FOR EACH ROW
+BEGIN
+  SELECT <%=entity.Name.ToUpper()%>_<%=entity.Properties[i].Name.ToUpper()%>_SEQUENCE.NEXTVAL INTO :NEW.ID FROM DUAL;
+END;
+<%
+    		}
+    	}
+    }
+%>
+--------------------------------------------------------------------------------------------
+<%
+        }
+    }
+%>
+
+<script runat="template">
+    /// <summary>
+    /// 获取字段大小和精度定义
+    /// </summary>
+    /// <param name="Property">属性类对象</param>
+    /// <returns>返回字段大小和精度定义</returns>
+    public static string GetColumnSize(Property property)
+    {
+        string tmpstr = "";
+        
+        switch(property.DbType)
+        {
+            case "NCHAR":
+                tmpstr += "(" + property.Size + " BYTE)";
+                break;
+            case "NUMBER":
+                tmpstr += "(" + property.Precision + "," + property.Scale + ")";
+                break;
+            case "NVARCHAR2":
+                tmpstr += "(" + property.Size + " BYTE)";
+                break;
+            case "VARCHAR2":
+                tmpstr += "(" + property.Size + " BYTE)";
+                break;
+			case "BFILE":
+            case "BLOB":
+            case "CHAR":
+            case "CLOB":
+            case "DATE":
+            case "FLOAT":
+            case "INTEGER":
+            case "LONG":
+            case "NCLOB":
+            case "RAW":
+            case "ROWID":
+            case "UROWID":
+            case "TIMESTAMP":
+            default:
+                break;
+        }
+        return tmpstr;
+    }
+</script>

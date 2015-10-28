@@ -1,0 +1,346 @@
+﻿<%@ CodeTemplate Language="C#" TargetLanguage="Java" Description="3.生成Model类" %>
+<%@ XmlProperty Name="CommonEntity" Schema="CommonEntity.xsd" Optional="True"  Default="TableEntity.xml" Description="实体类对象XML描述文档" %>
+<%@ Property Name="EntityName" Type="System.String" Optional="True" Category="Context" Description="实体类名" %>
+<%@ Map Name="ORACLEJAVAMap" Src="Oracle-Java.csmap" Default="__UNKNOWTYPE__" Description="Oracle数据类型对应C#数据类型映射表" %>
+
+<%@ Assembly Src="Common.cs" %>
+<%@ Import Namespace="Com.IceFox.Utils" %>
+
+<%
+    foreach(Entity entity in CommonEntity.Entities)
+    {
+        if(entity.Name == EntityName)
+        {
+%>
+
+	<%=Common.ConvertOTJ(entity.Name)%> <%=Common.ConvertOTJ(entity.Name).ToLower()%> = new <%=Common.ConvertOTJ(entity.Name)%>();
+	<%
+		for(int i=0;i<entity.Properties.Count;i++){
+	%>
+    //<%=entity.Properties[i].Remark%>
+	<%=Common.ConvertOTJ(entity.Name).ToLower()%>.set<%=Common.ConvertOTJ(entity.Properties[i].Name)%>();
+	<%
+		}
+	%>
+	
+	<%=Common.ConvertOTJ(entity.Name)%> <%=Common.ConvertOTJ(entity.Name).ToLower()%> = new <%=Common.ConvertOTJ(entity.Name)%>();
+	<%
+		for(int i=0;i<entity.Properties.Count;i++){
+	%>
+    //<%=entity.Properties[i].Remark%>
+	<%=Common.ConvertOTJ(entity.Name).ToLower()%>.set<%=Common.ConvertOTJ(entity.Properties[i].Name)%>(<%=GetJAVADataDefaultValue(entity.Properties[i])%>);
+	<%
+		}
+	%>
+
+	<%
+		for(int i=0;i<entity.Properties.Count;i++){
+	%>
+    //<%=entity.Properties[i].Remark%>
+	b_<%=Common.ConvertOTJ(entity.Name)%>.set<%=Common.ConvertOTJ(entity.Properties[i].Name)%>(p_<%=Common.ConvertOTJ(entity.Name)%>.get<%=Common.ConvertOTJ(entity.Properties[i].Name)%>());
+	<%
+		}
+	%>
+	
+	<%
+		for(int i=0;i<entity.Properties.Count;i++){
+	%>
+    //<%=entity.Properties[i].Remark%>
+	if(b_<%=Common.ConvertOTJ(entity.Name)%>.get<%=Common.ConvertOTJ(entity.Properties[i].Name)%>()!=null)
+		p_<%=Common.ConvertOTJ(entity.Name)%>.set<%=Common.ConvertOTJ(entity.Properties[i].Name)%>(b_<%=Common.ConvertOTJ(entity.Name)%>.get<%=Common.ConvertOTJ(entity.Properties[i].Name)%>());
+	<%
+		}
+	%>
+	
+	<%
+		for(int i=0;i<entity.Properties.Count;i++){
+	%>
+    //<%=entity.Properties[i].Remark%>
+	p_<%=Common.ConvertOTJ(entity.Name)%>.set<%=Common.ConvertOTJ(entity.Properties[i].Name)%>(b_<%=Common.ConvertOTJ(entity.Name)%>.get<%=Common.ConvertOTJ(entity.Properties[i].Name)%>());
+	<%
+		}
+	%>
+	
+	<%
+		for(int i=0;i<entity.Properties.Count;i++){
+	%>
+	<%=Common.InitialToLower(Common.ConvertOTJ(entity.Properties[i].Name),false)%>;	//<%=entity.Properties[i].Remark%>
+	<%
+		}
+	%>
+	
+	
+	
+	<%
+		for(int i=0;i<entity.Properties.Count;i++){
+	%>
+	<%=Common.InitialToLower(Common.ConvertOTJ(entity.Properties[i].Name),false)%>	
+	<%
+		}
+	%>
+	
+	<%
+		for(int i=0;i<entity.Properties.Count;i++){
+	%>
+	<%=Common.ConvertOTJ(entity.Properties[i].Name),false%>	
+	<%
+		}
+	%>
+	
+	<%
+		for(int i=0;i<entity.Properties.Count;i++){
+	%>
+	<%=Common.InitialToLower(Common.ConvertOTJ(entity.Properties[i].Name),false),false%> = <%=i+1%>;  //<%=entity.Properties[i].Remark%> <%=entity.Properties[i].JavaType%>
+	<%
+		}
+	%>
+	
+	<%
+		for(int i=0;i<entity.Properties.Count;i++){
+	%>
+	.set<%=Common.ConvertOTJ(entity.Properties[i].Name),false%>() //<%=entity.Properties[i].Remark%>
+	<%
+		}
+	%>
+	
+	<%
+		for(int i=0;i<entity.Properties.Count;i++){
+	%>
+	{
+		name:"<%=Common.InitialToLower(Common.ConvertOTJ(entity.Properties[i].Name),false)%>"	//<%=entity.Properties[i].Remark%>
+	}<%=i!=entity.Properties.Count-1?",":""%>
+	<%
+		}
+	%>
+	
+		<%
+		for(int i=0;i<entity.Properties.Count;i++){
+	%>
+		<%=Common.InitialToLower(Common.ConvertOTJ(entity.Properties[i].Name),false)%>:fvalues.<%=Common.InitialToLower(Common.ConvertOTJ(entity.Properties[i].Name),false)%> "	//<%=entity.Properties[i].Remark%>
+	<%
+		}
+	%>
+	
+	
+	<%
+		for(int i=0;i<entity.Properties.Count;i++){
+	%>
+   '<tr>' +
+	'<td class="fieldtitle"><%=entity.Properties[i].Remark%></td>' +
+	'<td>{<%=Common.InitialToLower(Common.ConvertOTJ(entity.Properties[i].Name),false)%>}</td>' +
+   '</tr>' +
+	<%
+		}
+	%>
+	
+	<%
+		for(int i=0;i<entity.Properties.Count;i++){
+	%>
+	<%=entity.Properties[i].Name%>	<%=entity.Properties[i].JavaType%>
+	<%
+		}
+	%>
+	
+	<%
+		for(int i=0;i<entity.Properties.Count;i++){
+	%>
+	{
+		xtype: 'gridcolumn',
+		text: '<%=entity.Properties[i].Remark%>',
+		dataIndex:"<%=Common.InitialToLower(Common.ConvertOTJ(entity.Properties[i].Name),false)%>"
+	}<%=i!=entity.Properties.Count-1?",":""%>
+	<%
+		}
+	%>
+	
+	INSERT INTO <%=entity.Name%>(
+	<%
+		for(int i=0;i<entity.Properties.Count;i++){
+	%>
+		<%=entity.Properties[i].Name%><%=i!=entity.Properties.Count-1?",":""%>	--<%=entity.Properties[i].Remark%>
+	<%
+		}
+	%>
+	)
+	VALUES
+	(
+	<%
+		for(int i=0;i<entity.Properties.Count;i++){
+	%>
+		<%=GetSQLDataDefaultValue(entity.Properties[i])%><%=i!=entity.Properties.Count-1?",":""%>	--<%=entity.Properties[i].Remark%>
+	<%
+		}
+	%>
+	);
+	
+	SELECT 
+	<%
+		for(int i=0;i<entity.Properties.Count;i++){
+	%>
+		<%=entity.Properties[i].Name%><%=i!=entity.Properties.Count-1?",":""%>	--<%=entity.Properties[i].Remark%>
+	<%
+		}
+	%>
+	FROM <%=entity.Name%>;
+	
+	SELECT 
+	<%
+		for(int i=0;i<entity.Properties.Count;i++){
+	%>
+		<%=entity.Properties[i].Name%> <%=entity.Properties[i].Remark%><%=i!=entity.Properties.Count-1?",":""%>
+	<%
+		}
+	%>
+	FROM <%=entity.Name%>;
+	
+	UPDATE <%=entity.Name%> SET
+	<%
+		for(int i=0;i<entity.Properties.Count;i++){
+	%>
+		 <%=entity.Properties[i].Name%>= <%=GetSQLDataDefaultValue(entity.Properties[i])%><%=i!=entity.Properties.Count-1?",":""%> --<%=entity.Properties[i].Remark%>
+	<%
+		}
+	%>
+	WHERE ID=0;
+<%
+        }
+    }
+%>
+
+<script runat="template">
+	public static string GetJAVADataDefaultValue(Property property)
+    {
+        string tmpstr = "";
+        switch(property.JavaType)
+        {
+			case "java.lang.Long":
+            	{
+            		tmpstr = "0l";
+            	}
+                break;
+            case "java.lang.Integer":
+            	{
+            		tmpstr = "0";
+            	}
+                break;
+            case "java.lang.Short":
+            	{
+            		tmpstr = "(short)0";
+            	}
+                break;
+            case "java.lang.String":
+            	{
+            		tmpstr = "\"\"";
+            	}
+            	break;
+            default:
+           		 {
+            		tmpstr = "__UNKNOW DATA TYPE__";
+            	}
+                break;
+        }
+        return tmpstr;
+    }
+	public static string GetSQLDataDefaultValue(Property property)
+    {
+        string tmpstr = "";
+        switch(property.JavaType)
+        {
+			case "java.lang.Long":
+            case "java.lang.Integer":
+            case "java.lang.Short":
+            	{
+            		tmpstr = "0";
+            	}
+                break;
+            case "java.lang.String":
+            	{
+            		tmpstr = "''";
+            	}
+            	break;
+            default:
+           		 {
+            		tmpstr = "__UNKNOW DATA TYPE__";
+            	}
+                break;
+        }
+        return tmpstr;
+    }
+    
+    /// <summary>
+    /// 获取字段大小和精度定义
+    /// </summary>
+    /// <param name="Property">属性类对象</param>
+    /// <returns>返回字段大小和精度定义</returns>
+    public static string GetColumnSize(Property property)
+    {
+        string tmpstr = "";
+        switch(property.DbType)
+        {
+            case "NCHAR":
+                tmpstr += "(" + property.Size + " BYTE)";
+                break;
+            case "NUMBER":
+                tmpstr += "(" + property.Precision + "," + property.Scale + ")";
+                break;
+            case "NVARCHAR2":
+                tmpstr += "(" + property.Size + " BYTE)";
+                break;
+            case "VARCHAR2":
+                tmpstr += "(" + property.Size + " BYTE)";
+                break;
+			case "BFILE":
+            case "BLOB":
+            case "CHAR":
+            case "CLOB":
+            case "DATE":
+            case "FLOAT":
+            case "INTEGER":
+            case "LONG":
+            case "NCLOB":
+            case "RAW":
+            case "ROWID":
+            case "UROWID":
+            case "TIMESTAMP":
+            default:
+                break;
+        }
+        return tmpstr;
+    }
+    
+    /// <summary>
+    /// 返回指定字段的JdbcTtype
+    /// </summary>
+    /// <param name="properties">字段属性集合</param>
+    /// <param name="fieldName">字段名</param>
+    /// <returns></returns>
+    public static string GetFieldJdbcType(PropertyCollection properties,string fieldName)
+    {
+        for(int i=0;i<properties.Count;i++){
+            if(fieldName == properties[i].Name)
+            {
+                return properties[i].DbType;
+            }
+        }
+        
+        return "___UNKNOWFIELD___";
+    }
+    
+    /// <summary>
+    /// 返回指定字段的JavaTtype
+    /// </summary>
+    /// <param name="properties">字段属性集合</param>
+    /// <param name="fieldName">字段名</param>
+    /// <returns></returns>
+    public static string GetFieldJavaType(PropertyCollection properties,string fieldName)
+    {
+        for(int i=0;i<properties.Count;i++){
+            if(fieldName == properties[i].Name)
+            {
+                return properties[i].JavaType;
+            }
+        }
+        
+        return "___UNKNOWFIELD___";
+    }
+</script>
