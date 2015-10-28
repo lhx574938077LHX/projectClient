@@ -25,8 +25,9 @@ public class Task3002 implements ITask {
 		Pkg4002 pkg4002 = new Pkg4002();	//4002报文为空不需设置任何属性
 		try {
 			Pkg3002 pkg3002 = (Pkg3002) JsonSerializer.deserializer(reqPkg.getMsgBody(),new TypeReference<Pkg3002>(){});
-			
+			int i=0;
 			String trxNo = pkg3002.getTrxNo();	//发起查询时返回的编号用于做信息匹对
+			System.out.println("开始保存。。。");
 			for(LoanInfo loanInfo : pkg3002.getLoanInfos())
 			{
 				//TODO:此处将返回的结果信息进行保存处理
@@ -51,10 +52,12 @@ public class Task3002 implements ITask {
 				xyvalidation.setArrearsamount(loanInfo.getArrearsAmount().toString());
 			    //公司代码
 				xyvalidation.setCompanycode(loanInfo.getCompanyCode());
-				xyvalidationMapper.insert(xyvalidation);
 				
+				xyvalidationMapper.insert(xyvalidation);
+				i=i+1;
+				System.out.println("保存第"+i+"条数据");
 			}
-			
+			System.out.println("结束保存。。。");
 			//正常情况
 			rspPkg.setRetCode("0000");
 			rspPkg.setRetMsg("成功接收到结果");

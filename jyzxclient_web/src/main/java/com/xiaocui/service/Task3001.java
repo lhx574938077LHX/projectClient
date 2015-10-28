@@ -30,6 +30,8 @@ public class Task3001 implements ITask {
 			 * TODO: 此处从数据库中查询到数据添加到loanInfos结果集中
 			 */
 			
+			
+			
 			pkg4001.setLoanInfos(loanInfos);
 			
 			//正常情况

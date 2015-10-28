@@ -14,30 +14,34 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.xiaocui.entity.PkgHeader;
 import com.xiaocui.service.Task3001;
 import com.xiaocui.service.Task3002;
+import com.xiaocui.settings.SystemSetting;
 
 @Controller
 @RequestMapping("/")
 public class IndexController {
-	private static final String companyCode = "P2PHT8B0000000001";	//请以配置文件形式或储存到数据库形式保存获取
-
-	//@Autowired
+//	private static final String companyCode = "P2PHT8B0000000001";	//请以配置文件形式或储存到数据库形式保存获取
+	
+	@Autowired
+	private SystemSetting systemSetting;
+	
+	@Autowired
 	private Task3001 task3001;
 	
 	@Autowired
 	private Task3002 task3002;
 	
-	//主页面悬赏榜单
 	@RequestMapping("indexV")
 	public String indexV(HttpServletRequest request, HttpServletResponse response) {
 		System.out.println("1111111111");
 		return "index";
 	}
-
+	
 	@RequestMapping("receive")
 	public void receive(HttpServletRequest request, HttpServletResponse response) {
 		OutputStream os = null;
 		ByteArrayOutputStream swapStream = null;
 		try {
+			System.out.println("测试开始");
 			swapStream = new ByteArrayOutputStream();  
 		    byte[] buf = new byte[4096];  
 		    int num = 0;  
@@ -64,7 +68,7 @@ public class IndexController {
 		PkgHeader reqPkg = new PkgHeader();	//请求报文
 		PkgHeader rspPkg = new PkgHeader();	//响应报文
 		
-		rspPkg.setCustNo(companyCode);	//配置服务器编号
+		rspPkg.setCustNo(systemSetting.getCompanyCode());	//配置服务器编号
 		rspPkg.setEncode(reqPkg.getEncode());	//设置编码
 		rspPkg.setEncryptType(reqPkg.getEncryptType());	//设置加密类型
 		rspPkg.setMsgType(reqPkg.getMsgType());	//设置消息类型
@@ -115,5 +119,8 @@ public class IndexController {
 		}
 		return rspPkg;
 	}
+	
+	
+	
 	
 }
