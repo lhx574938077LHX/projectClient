@@ -12,7 +12,9 @@
 		<param-value>
 			classpath*:spring.xml,
 			classpath*:spring-beans.xml,
-			classpath*:spring-mybatis.xml
+			classpath*:spring-mybatis.xml,
+			classpath*:spring-cache.xml,
+			classpath*:cxf-servlet.xml
 		</param-value>
 	</context-param>
 	<filter>
@@ -39,6 +41,12 @@
 		<listener-class>org.springframework.web.util.IntrospectorCleanupListener</listener-class>
 	</listener>
 	
+	<!-- 自定义监听 
+	<listener>
+		<description>MyServletContextAttributeListener监听器</description>
+		<listener-class>com.xiaocui.listener.MyServletContextAttributeListener</listener-class>
+	</listener>-->
+	
 	<!-- spring mvc servlet -->
 	<servlet>
 		<description>spring mvc servlet</description>
@@ -59,7 +67,7 @@
 	</servlet-mapping>
 		
 	<welcome-file-list>
-		<welcome-file>index.jsp</welcome-file>
+		<welcome-file>indexV.do</welcome-file>
 	</welcome-file-list>
 	
 	<!-- 配置session超时时间，单位分钟 -->
@@ -67,7 +75,19 @@
 		<session-timeout>15</session-timeout>
 	</session-config>
 	
-
+	<!-- webservice CXF 配置 -->
+	<servlet>
+		<description>Apache CXF Endpoint</description>
+		<display-name>cxf</display-name>
+		<servlet-name>cxf</servlet-name>
+		<servlet-class>org.apache.cxf.transport.servlet.CXFServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>cxf</servlet-name>
+		<url-pattern>/services/*</url-pattern>
+	</servlet-mapping>
+	
 	<!--  
 	<error-page>
 		<exception-type>org.renrencui.platform.common.SkipException</exception-type>

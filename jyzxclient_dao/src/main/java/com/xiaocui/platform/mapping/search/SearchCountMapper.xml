@@ -1,0 +1,176 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaocui.platform.dao.search.SearchCountMapper" >
+  <resultMap id="BaseResultMap" type="com.xiaocui.platform.model.search.SearchCount" >
+    <id column="ID" property="id" jdbcType="DECIMAL" />
+    <result column="COMPANY_ID" property="companyId" jdbcType="DECIMAL" />
+    <result column="COMPANY_CODE" property="companyCode" jdbcType="VARCHAR" />
+    <result column="SEARCH_COUNT" property="searchCount" jdbcType="DECIMAL" />
+    <result column="REC_TIME" property="recTime" jdbcType="DECIMAL" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID,
+    COMPANY_ID,
+    COMPANY_CODE,
+    SEARCH_COUNT,
+    REC_TIME
+  </sql>
+  <sql id= "TABLE_SEQ">
+    SEARCH_COUNT_ID_SEQUENCE.NEXTVAL
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    SELECT 
+    <include refid="Base_Column_List" />
+    FROM SEARCH_COUNT
+    WHERE ID = #{id,jdbcType=DECIMAL}
+  </select>
+  <select id= "selectList" resultMap ="BaseResultMap" parameterType= "java.util.Map" >
+		SELECT
+		<include refid ="Base_Column_List" />
+		 FROM ( SELECT t.*,rownum r FROM
+		( SELECT * FROM SEARCH_COUNT 
+			<if test ="condition != null">
+			WHERE ${condition}
+			</if >
+			<if test ="orderBy != null">
+					ORDER BY ${orderBy}
+			</if >
+		) t ) WHERE 1=1
+			<if test ="start != null">
+					AND r &gt; ${start}
+			</if >
+			<if test ="end != null">
+					AND r &lt;= ${end}
+			</if >
+	</select>
+  	<select id= "selectOne" resultMap ="BaseResultMap" parameterType= "java.util.Map" >
+		SELECT
+		<include refid ="Base_Column_List" />
+		  FROM SEARCH_COUNT  
+			<if test ="_parameter != null">
+			WHERE ${_parameter} AND rownum = 1
+			</if >
+	</select>
+    <select id= "selectCount" resultType ="java.lang.Long" parameterType= "java.lang.String" >
+		SELECT
+			COUNT(ID)
+		 FROM SEARCH_COUNT 
+		 <if test ="_parameter != null">
+			WHERE ${_parameter}
+		 </if >
+	</select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    DELETE FROM SEARCH_COUNT
+    WHERE ID = #{id,jdbcType=DECIMAL}
+  </delete>
+  <delete id="deleteByCondition" parameterType="java.lang.String" >
+    DELETE  FROM SEARCH_COUNT
+    WHERE ${_parameter}
+  </delete>
+  <insert id="insert" parameterType="com.xiaocui.platform.model.search.SearchCount" >
+    <selectKey keyProperty= "id" resultType ="java.lang.Long" order= "BEFORE">
+        SELECT <include refid ="TABLE_SEQ" /> FROM dual
+    </selectKey>
+    INSERT INTO SEARCH_COUNT (
+        ID,
+        COMPANY_ID,
+        COMPANY_CODE,
+        SEARCH_COUNT,
+        REC_TIME
+      )
+    VALUES (
+        #{id,jdbcType=DECIMAL},
+        #{companyId,jdbcType=DECIMAL},
+        #{companyCode,jdbcType=VARCHAR},
+        #{searchCount,jdbcType=DECIMAL},
+        #{recTime,jdbcType=DECIMAL}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.xiaocui.platform.model.search.SearchCount" >
+    <selectKey keyProperty= "id" resultType ="java.lang.Long" order= "BEFORE">
+        SELECT <include refid ="TABLE_SEQ" /> from dual
+    </selectKey>
+    INSERT INTO SEARCH_COUNT
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="companyId != null" >
+        COMPANY_ID,
+      </if>
+      <if test="companyCode != null" >
+        COMPANY_CODE,
+      </if>
+      <if test="searchCount != null" >
+        SEARCH_COUNT,
+      </if>
+      <if test="recTime != null" >
+        REC_TIME,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=DECIMAL},
+      </if>
+      <if test="companyId != null" >
+        #{companyId,jdbcType=DECIMAL},
+      </if>
+      <if test="companyCode != null" >
+        #{companyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="searchCount != null" >
+        #{searchCount,jdbcType=DECIMAL},
+      </if>
+      <if test="recTime != null" >
+        #{recTime,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xiaocui.platform.model.search.SearchCount" >
+    UPDATE SEARCH_COUNT
+    <set >
+      <if test="id != null" >
+        ID = #{id,jdbcType=DECIMAL},
+      </if>
+      <if test="companyId != null" >
+        COMPANY_ID = #{companyId,jdbcType=DECIMAL},
+      </if>
+      <if test="companyCode != null" >
+        COMPANY_CODE = #{companyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="searchCount != null" >
+        SEARCH_COUNT = #{searchCount,jdbcType=DECIMAL},
+      </if>
+      <if test="recTime != null" >
+        REC_TIME = #{recTime,jdbcType=DECIMAL}
+      </if>
+    </set>
+    WHERE ID = #{id,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xiaocui.platform.model.search.SearchCount" >
+    UPDATE SEARCH_COUNT SET 
+      <if test="companyId != null" >
+        COMPANY_ID = #{companyId,jdbcType=DECIMAL},
+      </if>
+      <if test="companyCode != null" >
+        COMPANY_CODE = #{companyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="searchCount != null" >
+        SEARCH_COUNT = #{searchCount,jdbcType=DECIMAL},
+      </if>
+      <if test="recTime != null" >
+        REC_TIME = #{recTime,jdbcType=DECIMAL}
+      </if>
+    WHERE ID = #{id,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByCondition"  parameterType="java.util.Map" >
+    UPDATE SEARCH_COUNT SET 
+       <if test="set != null">
+       	${set}
+       </if>
+    WHERE 
+		<if test="condition != null">
+			${condition}
+		</if>
+  </update>
+</mapper>

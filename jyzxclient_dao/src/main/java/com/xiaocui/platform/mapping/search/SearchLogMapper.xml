@@ -1,0 +1,272 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaocui.platform.dao.search.SearchLogMapper" >
+  <resultMap id="BaseResultMap" type="com.xiaocui.platform.model.search.SearchLog" >
+    <id column="ID" property="id" jdbcType="DECIMAL" />
+    <result column="SEARCH_TRX_NO" property="searchTrxNo" jdbcType="VARCHAR" />
+    <result column="REAL_NAME" property="realName" jdbcType="VARCHAR" />
+    <result column="ID_CARD" property="idCard" jdbcType="VARCHAR" />
+    <result column="REQ_COMPANY_ID" property="reqCompanyId" jdbcType="DECIMAL" />
+    <result column="REQ_COMPANY_CODE" property="reqCompanyCode" jdbcType="VARCHAR" />
+    <result column="STATE" property="state" jdbcType="SMALLINT" />
+    <result column="SYNC_STATE" property="syncState" jdbcType="SMALLINT" />
+    <result column="SEARCH_TYPE" property="searchType" jdbcType="SMALLINT" />
+    <result column="REC_TIME" property="recTime" jdbcType="DECIMAL" />
+    <result column="END_TIME" property="endTime" jdbcType="DECIMAL" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID,
+    SEARCH_TRX_NO,
+    REAL_NAME,
+    ID_CARD,
+    REQ_COMPANY_ID,
+    REQ_COMPANY_CODE,
+    STATE,
+    SYNC_STATE,
+    SEARCH_TYPE,
+    REC_TIME,
+    END_TIME
+  </sql>
+  <sql id= "TABLE_SEQ">
+    SEARCH_LOG_ID_SEQUENCE.NEXTVAL
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    SELECT 
+    <include refid="Base_Column_List" />
+    FROM SEARCH_LOG
+    WHERE ID = #{id,jdbcType=DECIMAL}
+  </select>
+  <select id= "selectList" resultMap ="BaseResultMap" parameterType= "java.util.Map" >
+		SELECT
+		<include refid ="Base_Column_List" />
+		 FROM ( SELECT t.*,rownum r FROM
+		( SELECT * FROM SEARCH_LOG 
+			<if test ="condition != null">
+			WHERE ${condition}
+			</if >
+			<if test ="orderBy != null">
+					ORDER BY ${orderBy}
+			</if >
+		) t ) WHERE 1=1
+			<if test ="start != null">
+					AND r &gt; ${start}
+			</if >
+			<if test ="end != null">
+					AND r &lt;= ${end}
+			</if >
+	</select>
+  	<select id= "selectOne" resultMap ="BaseResultMap" parameterType= "java.util.Map" >
+		SELECT
+		<include refid ="Base_Column_List" />
+		  FROM SEARCH_LOG  
+			<if test ="_parameter != null">
+			WHERE ${_parameter} AND rownum = 1
+			</if >
+	</select>
+    <select id= "selectCount" resultType ="java.lang.Long" parameterType= "java.lang.String" >
+		SELECT
+			COUNT(ID)
+		 FROM SEARCH_LOG 
+		 <if test ="_parameter != null">
+			WHERE ${_parameter}
+		 </if >
+	</select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    DELETE FROM SEARCH_LOG
+    WHERE ID = #{id,jdbcType=DECIMAL}
+  </delete>
+  <delete id="deleteByCondition" parameterType="java.lang.String" >
+    DELETE  FROM SEARCH_LOG
+    WHERE ${_parameter}
+  </delete>
+  <insert id="insert" parameterType="com.xiaocui.platform.model.search.SearchLog" >
+    <selectKey keyProperty= "id" resultType ="java.lang.Long" order= "BEFORE">
+        SELECT <include refid ="TABLE_SEQ" /> FROM dual
+    </selectKey>
+    INSERT INTO SEARCH_LOG (
+        ID,
+        SEARCH_TRX_NO,
+        REAL_NAME,
+        ID_CARD,
+        REQ_COMPANY_ID,
+        REQ_COMPANY_CODE,
+        STATE,
+        SYNC_STATE,
+        SEARCH_TYPE,
+        REC_TIME,
+        END_TIME
+      )
+    VALUES (
+        #{id,jdbcType=DECIMAL},
+        #{searchTrxNo,jdbcType=VARCHAR},
+        #{realName,jdbcType=VARCHAR},
+        #{idCard,jdbcType=VARCHAR},
+        #{reqCompanyId,jdbcType=DECIMAL},
+        #{reqCompanyCode,jdbcType=VARCHAR},
+        #{state,jdbcType=SMALLINT},
+        #{syncState,jdbcType=SMALLINT},
+        #{searchType,jdbcType=SMALLINT},
+        #{recTime,jdbcType=DECIMAL},
+        #{endTime,jdbcType=DECIMAL}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.xiaocui.platform.model.search.SearchLog" >
+    <selectKey keyProperty= "id" resultType ="java.lang.Long" order= "BEFORE">
+        SELECT <include refid ="TABLE_SEQ" /> from dual
+    </selectKey>
+    INSERT INTO SEARCH_LOG
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="searchTrxNo != null" >
+        SEARCH_TRX_NO,
+      </if>
+      <if test="realName != null" >
+        REAL_NAME,
+      </if>
+      <if test="idCard != null" >
+        ID_CARD,
+      </if>
+      <if test="reqCompanyId != null" >
+        REQ_COMPANY_ID,
+      </if>
+      <if test="reqCompanyCode != null" >
+        REQ_COMPANY_CODE,
+      </if>
+      <if test="state != null" >
+        STATE,
+      </if>
+      <if test="syncState != null" >
+        SYNC_STATE,
+      </if>
+      <if test="searchType != null" >
+        SEARCH_TYPE,
+      </if>
+      <if test="recTime != null" >
+        REC_TIME,
+      </if>
+      <if test="endTime != null" >
+        END_TIME,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=DECIMAL},
+      </if>
+      <if test="searchTrxNo != null" >
+        #{searchTrxNo,jdbcType=VARCHAR},
+      </if>
+      <if test="realName != null" >
+        #{realName,jdbcType=VARCHAR},
+      </if>
+      <if test="idCard != null" >
+        #{idCard,jdbcType=VARCHAR},
+      </if>
+      <if test="reqCompanyId != null" >
+        #{reqCompanyId,jdbcType=DECIMAL},
+      </if>
+      <if test="reqCompanyCode != null" >
+        #{reqCompanyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null" >
+        #{state,jdbcType=SMALLINT},
+      </if>
+      <if test="syncState != null" >
+        #{syncState,jdbcType=SMALLINT},
+      </if>
+      <if test="searchType != null" >
+        #{searchType,jdbcType=SMALLINT},
+      </if>
+      <if test="recTime != null" >
+        #{recTime,jdbcType=DECIMAL},
+      </if>
+      <if test="endTime != null" >
+        #{endTime,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xiaocui.platform.model.search.SearchLog" >
+    UPDATE SEARCH_LOG
+    <set >
+      <if test="id != null" >
+        ID = #{id,jdbcType=DECIMAL},
+      </if>
+      <if test="searchTrxNo != null" >
+        SEARCH_TRX_NO = #{searchTrxNo,jdbcType=VARCHAR},
+      </if>
+      <if test="realName != null" >
+        REAL_NAME = #{realName,jdbcType=VARCHAR},
+      </if>
+      <if test="idCard != null" >
+        ID_CARD = #{idCard,jdbcType=VARCHAR},
+      </if>
+      <if test="reqCompanyId != null" >
+        REQ_COMPANY_ID = #{reqCompanyId,jdbcType=DECIMAL},
+      </if>
+      <if test="reqCompanyCode != null" >
+        REQ_COMPANY_CODE = #{reqCompanyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null" >
+        STATE = #{state,jdbcType=SMALLINT},
+      </if>
+      <if test="syncState != null" >
+        SYNC_STATE = #{syncState,jdbcType=SMALLINT},
+      </if>
+      <if test="searchType != null" >
+        SEARCH_TYPE = #{searchType,jdbcType=SMALLINT},
+      </if>
+      <if test="recTime != null" >
+        REC_TIME = #{recTime,jdbcType=DECIMAL},
+      </if>
+      <if test="endTime != null" >
+        END_TIME = #{endTime,jdbcType=DECIMAL}
+      </if>
+    </set>
+    WHERE ID = #{id,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xiaocui.platform.model.search.SearchLog" >
+    UPDATE SEARCH_LOG SET 
+      <if test="searchTrxNo != null" >
+        SEARCH_TRX_NO = #{searchTrxNo,jdbcType=VARCHAR},
+      </if>
+      <if test="realName != null" >
+        REAL_NAME = #{realName,jdbcType=VARCHAR},
+      </if>
+      <if test="idCard != null" >
+        ID_CARD = #{idCard,jdbcType=VARCHAR},
+      </if>
+      <if test="reqCompanyId != null" >
+        REQ_COMPANY_ID = #{reqCompanyId,jdbcType=DECIMAL},
+      </if>
+      <if test="reqCompanyCode != null" >
+        REQ_COMPANY_CODE = #{reqCompanyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null" >
+        STATE = #{state,jdbcType=SMALLINT},
+      </if>
+      <if test="syncState != null" >
+        SYNC_STATE = #{syncState,jdbcType=SMALLINT},
+      </if>
+      <if test="searchType != null" >
+        SEARCH_TYPE = #{searchType,jdbcType=SMALLINT},
+      </if>
+      <if test="recTime != null" >
+        REC_TIME = #{recTime,jdbcType=DECIMAL},
+      </if>
+      <if test="endTime != null" >
+        END_TIME = #{endTime,jdbcType=DECIMAL}
+      </if>
+    WHERE ID = #{id,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByCondition"  parameterType="java.util.Map" >
+    UPDATE SEARCH_LOG SET 
+       <if test="set != null">
+       	${set}
+       </if>
+    WHERE 
+		<if test="condition != null">
+			${condition}
+		</if>
+  </update>
+</mapper>

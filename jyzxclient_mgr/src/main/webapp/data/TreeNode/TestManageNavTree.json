@@ -1,0 +1,7 @@
+[
+    {
+       id:"csgl",
+        text: "测试管理",
+        leaf: true
+    }
+]

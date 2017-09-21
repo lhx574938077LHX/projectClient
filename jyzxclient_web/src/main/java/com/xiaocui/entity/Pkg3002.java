@@ -3,7 +3,9 @@ package com.xiaocui.entity;
 import java.util.List;
 
 public class Pkg3002 {
+
 	private String trxNo;
+	
 	private List<LoanInfo> loanInfos;
 
 	public String getTrxNo() {

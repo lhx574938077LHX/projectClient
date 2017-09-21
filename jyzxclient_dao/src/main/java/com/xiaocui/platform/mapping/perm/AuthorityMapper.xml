@@ -1,0 +1,176 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaocui.platform.dao.perm.AuthorityMapper" >
+  <resultMap id="BaseResultMap" type="com.xiaocui.platform.model.perm.Authority" >
+    <id column="ID" property="id" jdbcType="DECIMAL" />
+    <result column="AUTH_TPL_ID" property="authTplId" jdbcType="DECIMAL" />
+    <result column="CODE" property="code" jdbcType="VARCHAR" />
+    <result column="FILTER_ID" property="filterId" jdbcType="DECIMAL" />
+    <result column="TYPE" property="type" jdbcType="DECIMAL" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID,
+    AUTH_TPL_ID,
+    CODE,
+    FILTER_ID,
+    TYPE
+  </sql>
+  <sql id= "TABLE_SEQ">
+    AUTHORITY_ID_SEQUENCE.NEXTVAL
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    SELECT 
+    <include refid="Base_Column_List" />
+    FROM AUTHORITY
+    WHERE ID = #{id,jdbcType=DECIMAL}
+  </select>
+  <select id= "selectList" resultMap ="BaseResultMap" parameterType= "java.util.Map" >
+		SELECT
+		<include refid ="Base_Column_List" />
+		 FROM ( SELECT t.*,rownum r FROM
+		( SELECT * FROM AUTHORITY 
+			<if test ="condition != null">
+			WHERE ${condition}
+			</if >
+			<if test ="orderBy != null">
+					ORDER BY ${orderBy}
+			</if >
+		) t ) WHERE 1=1
+			<if test ="start != null">
+					AND r &gt; ${start}
+			</if >
+			<if test ="end != null">
+					AND r &lt;= ${end}
+			</if >
+	</select>
+  	<select id= "selectOne" resultMap ="BaseResultMap" parameterType= "java.util.Map" >
+		SELECT
+		<include refid ="Base_Column_List" />
+		  FROM AUTHORITY  
+			<if test ="_parameter != null">
+			WHERE ${_parameter} AND rownum = 1
+			</if >
+	</select>
+    <select id= "selectCount" resultType ="java.lang.Long" parameterType= "java.lang.String" >
+		SELECT
+			COUNT(ID)
+		 FROM AUTHORITY 
+		 <if test ="_parameter != null">
+			WHERE ${_parameter}
+		 </if >
+	</select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    DELETE FROM AUTHORITY
+    WHERE ID = #{id,jdbcType=DECIMAL}
+  </delete>
+  <delete id="deleteByCondition" parameterType="java.lang.String" >
+    DELETE  FROM AUTHORITY
+    WHERE ${_parameter}
+  </delete>
+  <insert id="insert" parameterType="com.xiaocui.platform.model.perm.Authority" >
+    <selectKey keyProperty= "id" resultType ="java.lang.Long" order= "BEFORE">
+        SELECT <include refid ="TABLE_SEQ" /> FROM dual
+    </selectKey>
+    INSERT INTO AUTHORITY (
+        ID,
+        AUTH_TPL_ID,
+        CODE,
+        FILTER_ID,
+        TYPE
+      )
+    VALUES (
+        #{id,jdbcType=DECIMAL},
+        #{authTplId,jdbcType=DECIMAL},
+        #{code,jdbcType=VARCHAR},
+        #{filterId,jdbcType=DECIMAL},
+        #{type,jdbcType=DECIMAL}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.xiaocui.platform.model.perm.Authority" >
+    <selectKey keyProperty= "id" resultType ="java.lang.Long" order= "BEFORE">
+        SELECT <include refid ="TABLE_SEQ" /> from dual
+    </selectKey>
+    INSERT INTO AUTHORITY
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="authTplId != null" >
+        AUTH_TPL_ID,
+      </if>
+      <if test="code != null" >
+        CODE,
+      </if>
+      <if test="filterId != null" >
+        FILTER_ID,
+      </if>
+      <if test="type != null" >
+        TYPE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=DECIMAL},
+      </if>
+      <if test="authTplId != null" >
+        #{authTplId,jdbcType=DECIMAL},
+      </if>
+      <if test="code != null" >
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="filterId != null" >
+        #{filterId,jdbcType=DECIMAL},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xiaocui.platform.model.perm.Authority" >
+    UPDATE AUTHORITY
+    <set >
+      <if test="id != null" >
+        ID = #{id,jdbcType=DECIMAL},
+      </if>
+      <if test="authTplId != null" >
+        AUTH_TPL_ID = #{authTplId,jdbcType=DECIMAL},
+      </if>
+      <if test="code != null" >
+        CODE = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="filterId != null" >
+        FILTER_ID = #{filterId,jdbcType=DECIMAL},
+      </if>
+      <if test="type != null" >
+        TYPE = #{type,jdbcType=DECIMAL}
+      </if>
+    </set>
+    WHERE ID = #{id,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xiaocui.platform.model.perm.Authority" >
+    UPDATE AUTHORITY SET 
+      <if test="authTplId != null" >
+        AUTH_TPL_ID = #{authTplId,jdbcType=DECIMAL},
+      </if>
+      <if test="code != null" >
+        CODE = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="filterId != null" >
+        FILTER_ID = #{filterId,jdbcType=DECIMAL},
+      </if>
+      <if test="type != null" >
+        TYPE = #{type,jdbcType=DECIMAL}
+      </if>
+    WHERE ID = #{id,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByCondition"  parameterType="java.util.Map" >
+    UPDATE AUTHORITY SET 
+       <if test="set != null">
+       	${set}
+       </if>
+    WHERE 
+		<if test="condition != null">
+			${condition}
+		</if>
+  </update>
+</mapper>

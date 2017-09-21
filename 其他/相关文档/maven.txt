@@ -1,0 +1,7 @@
+mvn archetype:generate -DgroupId=com.91zhengxin -DartifactId=91zhengxin -DarchetypeArtifactId=maven-archetype-quickstart -DinteractiveMode=false
+mvn archetype:generate -DgroupId=com.91zhengxin -DartifactId=common -DarchetypeArtifactId=maven-archetype-quickstart -DinteractiveMode=false
+mvn archetype:generate -DgroupId=com.91zhengxin -DartifactId=service -DarchetypeArtifactId=maven-archetype-quickstart -DinteractiveMode=false
+mvn archetype:generate -DgroupId=com.91zhengxin -DartifactId=dao -DarchetypeArtifactId=maven-archetype-quickstart -DinteractiveMode=false
+mvn archetype:generate -DgroupId=com.91zhengxin -DartifactId=mgr -DarchetypeArtifactId=maven-archetype-webapp -DinteractiveMode=false
+mvn archetype:generate -DgroupId=com.91zhengxin -DartifactId=web -DarchetypeArtifactId=maven-archetype-webapp -DinteractiveMode=false 
+mvn archetype:generate -DgroupId=com.91zhengxin -DartifactId=dbtool -DarchetypeArtifactId=maven-archetype-quickstart -DinteractiveMode=false

@@ -1,0 +1,233 @@
+﻿<%@ CodeTemplate Language="C#" TargetLanguage="T-SQL" Description="1.生成数据表" %>
+<%@ XmlProperty Name="CommonEntity" Schema="CommonEntity.xsd" Optional="True"  Default="TableEntity.xml" Description="实体类对象XML描述文档" %>
+<%@ Property Name="EntityName" Type="System.String" Optional="True" Category="Context" Description="实体类名" %>
+<%@ Property Name="EnableInsertTrigger" Type="System.Boolean" Optional="True" Default="False" Category="Context" Description="是否生成INSERT触发" %>
+
+<%@ Assembly Src="Common.cs" %>
+<%@ Import Namespace="Com.IceFox.Utils" %>
+
+<%
+    foreach(Entity entity in CommonEntity.Entities)
+    {
+        if(entity.Name == EntityName)
+        {
+%>
+-------------------------------------<%=entity.Name%>---------------------------------------
+<%if(!entity.SplitTable) {%>
+--建表
+DECLARE t_num NUMBER;
+BEGIN
+  SELECT COUNT(1) INTO t_num FROM user_tables WHERE table_name='<%=entity.Name%>';
+  IF t_num = 1 THEN
+    EXECUTE IMMEDIATE 'DROP TABLE "<%=entity.Name%>"';
+  END IF;
+END;
+/
+CREATE TABLE "<%=entity.Name%>" 
+(	
+<%
+    for(int i=0;i<entity.Properties.Count;i++){
+%>
+	"<%=entity.Properties[i].Name%>" <%=entity.Properties[i].DbType%><%=GetColumnSize(entity.Properties[i])%><%=String.IsNullOrEmpty(entity.Properties[i].DefaultValue)?"":" DEFAULT '"+entity.Properties[i].DefaultValue+"'"%><%=entity.Properties[i].AllowNull?" NULL":" NOT NULL"%><%=entity.Properties[i].PrimaryKey?" PRIMARY KEY":""%><%=i!=entity.Properties.Count-1?",":""%>
+<%
+    }
+%>
+);
+--设置字段备注
+<%
+    for(int i=0;i<entity.Properties.Count;i++){
+%>
+COMMENT ON COLUMN "<%=entity.Name%>"."<%=entity.Properties[i].Name%>" IS '<%=entity.Properties[i].Remark%>';
+<%
+    }
+}
+else
+{
+%>
+--分表插入存储
+SET SERVEROUTPUT ON;
+
+--SIP S:Split I:Insert P:PROCEDURE
+CREATE OR REPLACE PROCEDURE SIP_<%=entity.Name%> (
+  <%for(int i=0;i<entity.Properties.Count;i++){%>
+  F_<%=entity.Properties[i].Name%> <%=entity.Properties[i].Name=="ID"?"OUT ":""%><%=entity.Properties[i].DbType%><%=i!=entity.Properties.Count-1?",":""%>
+  <%}%>
+) AS
+V_TABLE_INDEX NUMBER(4,0) := 0; --当前表序列
+V_ROW_MAX NUMBER(12,0) := <%=entity.MaxRow%>; --单表数据最大请不要修改
+V_TMP_VAL NUMBER(4,0) := 0; --用于判断表是否存在的变量
+V_TABLE_NAME VARCHAR2(30 BYTE); --表名
+V_SQL VARCHAR2(1024 BYTE); --SQL
+BEGIN
+  --获取插入ID
+  SELECT <%=entity.Name.ToUpper()%>_ID_SEQUENCE.NEXTVAL INTO F_ID FROM DUAL;
+  
+  --计算表索引
+  V_TABLE_INDEX := CEIL(F_ID/V_ROW_MAX);
+  
+  --设置表名
+  V_TABLE_NAME := '<%=entity.Name%>_'||V_TABLE_INDEX;
+  
+  --查询表明在库中的数量
+  SELECT COUNT(1) INTO V_TMP_VAL FROM ALL_TABLES WHERE TABLE_NAME=V_TABLE_NAME AND OWNER=USER;
+  
+  BEGIN
+    V_SQL := 'INSERT INTO '||V_TABLE_NAME||'(<%for(int i=0;i<entity.Properties.Count;i++){%><%=entity.Properties[i].Name%><%=i!=entity.Properties.Count-1?",":""%><%}%>) VALUES(<%for(int i=0;i<entity.Properties.Count;i++){%>:<%=i+1%><%=i!=entity.Properties.Count-1?",":""%><%}%>)';
+    DBMS_OUTPUT.PUT_LINE(V_SQL);
+    
+    IF V_TMP_VAL = 0 THEN 
+      EXECUTE IMMEDIATE '
+      CREATE TABLE '||V_TABLE_NAME||' 
+      (	
+<%
+    for(int i=0;i<entity.Properties.Count;i++){
+%>
+		<%=entity.Properties[i].Name%> <%=entity.Properties[i].DbType%><%=GetColumnSize(entity.Properties[i])%><%=String.IsNullOrEmpty(entity.Properties[i].DefaultValue)?"":" DEFAULT '"+entity.Properties[i].DefaultValue+"'"%><%=entity.Properties[i].AllowNull?" NULL":" NOT NULL"%><%=entity.Properties[i].PrimaryKey?" PRIMARY KEY":""%><%=i!=entity.Properties.Count-1?",":""%>
+<%
+    }
+%>
+      )';
+      --设置字段备注
+	  <%for(int i=0;i<entity.Properties.Count;i++){%>
+      EXECUTE IMMEDIATE 'COMMENT ON COLUMN '||V_TABLE_NAME||'.<%=entity.Properties[i].Name%> IS ''<%=entity.Properties[i].Remark%>''';
+      <%}%>
+      --创建ID约束
+      EXECUTE IMMEDIATE 'ALTER TABLE '||V_TABLE_NAME||' ADD CONSTRAINT '||V_TABLE_NAME||'_ID_CHK CHECK(ID>='||(V_TABLE_INDEX*V_ROW_MAX-V_ROW_MAX+1)||' AND ID<='||(V_TABLE_INDEX*V_ROW_MAX)||')';
+      
+      --数据插入
+      EXECUTE IMMEDIATE V_SQL USING <%for(int i=0;i<entity.Properties.Count;i++){%>F_<%=entity.Properties[i].Name%><%=i!=entity.Properties.Count-1?",":""%><%}%>;
+      DBMS_OUTPUT.PUT_LINE('创建表'||V_TABLE_NAME||'并插入数据成功');
+    ELSE 
+      --数据插入
+      EXECUTE IMMEDIATE V_SQL USING <%for(int i=0;i<entity.Properties.Count;i++){%>F_<%=entity.Properties[i].Name%><%=i!=entity.Properties.Count-1?",":""%><%}%>;
+      DBMS_OUTPUT.PUT_LINE('表'||V_TABLE_NAME||'插入数据成功');
+    END IF;
+  EXCEPTION
+    WHEN OTHERS THEN
+	F_ID := 0;
+    DBMS_OUTPUT.PUT_LINE('表'||V_TABLE_NAME||'插入数据时发生异常 SQLCODE:'||SQLCODE||' SQLERRM:'||SQLERRM);
+  END;
+END;
+/
+--S: Select P:PrimaryKey P:PROCEDURE
+CREATE OR REPLACE PROCEDURE SPP_<%=entity.Name%>(
+  R_CURSOR OUT SYS_REFCURSOR,
+  F_ID NUMBER
+)
+AS
+V_TABLE_INDEX NUMBER(4,0) := 0; --当前表序列
+V_TABLE_NAME VARCHAR2(30 BYTE); --表名
+V_ROW_MAX NUMBER(12,0) := 4; --单表数据最大请不要修改
+BEGIN
+  --计算表索引
+  V_TABLE_INDEX := CEIL(F_ID/V_ROW_MAX);
+  
+  --设置表名
+  V_TABLE_NAME := '<%=entity.Name%>_' || V_TABLE_INDEX;
+  
+  OPEN R_CURSOR FOR 'SELECT * FROM ' || V_TABLE_NAME || ' WHERE ID=' || F_ID;   
+END;
+/
+<%
+}
+    for(int i=0;i<entity.Properties.Count;i++){
+		if(entity.Properties[i].Identity){
+%>
+--创建序列
+DECLARE s_num NUMBER;
+BEGIN
+  SELECT COUNT(1) INTO s_num FROM user_sequences WHERE sequence_name= '<%=entity.Name.ToUpper()%>_<%=entity.Properties[i].Name.ToUpper()%>_SEQUENCE';
+  IF s_num = 1 THEN
+    EXECUTE IMMEDIATE 'DROP SEQUENCE <%=entity.Name.ToUpper()%>_<%=entity.Properties[i].Name.ToUpper()%>_SEQUENCE';
+  END IF;
+END;
+/
+CREATE SEQUENCE <%=entity.Name.ToUpper()%>_<%=entity.Properties[i].Name.ToUpper()%>_SEQUENCE
+INCREMENT BY <%=entity.Properties[i].IdentityIncrement%>  --每次增加几个
+MINVALUE 1      --最小值为1
+NOMAXVALUE      --不限制最大值
+START WITH <%=entity.Properties[i].IdentitySeed%>    --从1开始
+CACHE 10        --缓存
+ORDER;
+<%
+		}
+    }
+    
+    if(EnableInsertTrigger)
+    {
+		if(!entity.SplitTable) 
+		{
+%>
+--创建INSERT触发器
+<%
+			for(int i=0;i<entity.Properties.Count;i++){
+				if(entity.Properties[i].Identity){
+%>
+DECLARE t_num NUMBER;
+BEGIN
+  SELECT COUNT(1) INTO t_num FROM user_triggers WHERE trigger_name='<%=entity.Name.ToUpper()%>_<%=entity.Properties[i].Name.ToUpper()%>_INSERT_TRIGGER';
+  IF t_num = 1 THEN
+    EXECUTE IMMEDIATE 'DROP TRIGGER <%=entity.Name.ToUpper()%>_<%=entity.Properties[i].Name.ToUpper()%>_INSERT_TRIGGER';
+  END IF;
+END;
+/
+CREATE TRIGGER <%=entity.Name.ToUpper()%>_<%=entity.Properties[i].Name.ToUpper()%>_INSERT_TRIGGER
+BEFORE INSERT ON EXAMPLE FOR EACH ROW
+BEGIN
+  SELECT <%=entity.Name.ToUpper()%>_<%=entity.Properties[i].Name.ToUpper()%>_SEQUENCE.NEXTVAL INTO :NEW.ID FROM DUAL;
+END;
+<%
+				}
+			}
+		}
+    }
+%>
+--------------------------------------------------------------------------------------------
+<%
+        }
+    }
+%>
+
+<script runat="template">
+    /// <summary>
+    /// 获取字段大小和精度定义
+    /// </summary>
+    /// <param name="Property">属性类对象</param>
+    /// <returns>返回字段大小和精度定义</returns>
+    public static string GetColumnSize(Property property)
+    {
+        string tmpstr = "";
+        
+        switch(property.DbType)
+        {
+            case "NCHAR":
+                tmpstr += "(" + property.Size + " BYTE)";
+                break;
+            case "NUMBER":
+                tmpstr += "(" + property.Precision + "," + property.Scale + ")";
+                break;
+            case "NVARCHAR2":
+                tmpstr += "(" + property.Size + " BYTE)";
+                break;
+            case "VARCHAR2":
+                tmpstr += "(" + property.Size + " BYTE)";
+                break;
+			case "BFILE":
+            case "BLOB":
+            case "CHAR":
+            case "CLOB":
+            case "DATE":
+            case "FLOAT":
+            case "INTEGER":
+            case "LONG":
+            case "NCLOB":
+            case "RAW":
+            case "ROWID":
+            case "UROWID":
+            case "TIMESTAMP":
+            default:
+                break;
+        }
+        return tmpstr;
+    }
+</script>

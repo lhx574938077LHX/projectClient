@@ -1,0 +1,674 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaocui.dao.facade.CompanyInfoBeanMapper" >
+  <resultMap id="BaseResultMap" type="com.xiaocui.dao.model.CompanyInfoBean" >
+    <id column="ID" property="id" jdbcType="DECIMAL" />
+    <result column="CONN_SIGN" property="connSign" jdbcType="VARCHAR" />
+    <result column="COMPANY_NAME" property="companyName" jdbcType="VARCHAR" />
+    <result column="COMPANY_CODE" property="companyCode" jdbcType="VARCHAR" />
+    <result column="INTEGRAL" property="integral" jdbcType="DECIMAL" />
+    <result column="INTEGRAL_MULT" property="integralMult" jdbcType="SMALLINT" />
+    <result column="STATE" property="state" jdbcType="SMALLINT" />
+    <result column="SERVICE_URL" property="serviceUrl" jdbcType="VARCHAR" />
+    <result column="P00001" property="p00001" jdbcType="SMALLINT" />
+    <result column="P00002" property="p00002" jdbcType="SMALLINT" />
+    <result column="P00003" property="p00003" jdbcType="SMALLINT" />
+    <result column="P00004" property="p00004" jdbcType="SMALLINT" />
+    <result column="P00005" property="p00005" jdbcType="SMALLINT" />
+    <result column="P00005_PARAM" property="p00005Param" jdbcType="SMALLINT" />
+    <result column="P00006" property="p00006" jdbcType="SMALLINT" />
+    <result column="P00006_PRICE" property="p00006Price" jdbcType="DECIMAL" />
+    <result column="P00007" property="p00007" jdbcType="SMALLINT" />
+    <result column="P00007_PRICE" property="p00007Price" jdbcType="DECIMAL" />
+    <result column="P00008" property="p00008" jdbcType="SMALLINT" />
+    <result column="P00008_PRICE" property="p00008Price" jdbcType="DECIMAL" />
+    <result column="P00009" property="p00009" jdbcType="SMALLINT" />
+    <result column="P00010" property="p00010" jdbcType="SMALLINT" />
+    <result column="P00010_PRICE" property="p00010Price" jdbcType="DECIMAL" />
+    <result column="P00011" property="p00011" jdbcType="SMALLINT" />
+    <result column="P00011_PRICE" property="p00011Price" jdbcType="DECIMAL" />
+    <result column="REC_TIME" property="recTime" jdbcType="DECIMAL" />
+    <result column="SOURCE_TYPE" property="sourceType" jdbcType="SMALLINT" />
+    <result column="COMPANY_LEVEL" property="companyLevel" jdbcType="SMALLINT" />
+    <result column="EXCLUDED" property="excluded" jdbcType="VARCHAR" />
+    <result column="BIND_IP" property="bindIp" jdbcType="VARCHAR" />
+    <result column="INTEGRAL_OVERDRAFT" property="integralOverdraft" jdbcType="DECIMAL" />
+    <result column="START_CHARGING_TIME" property="startChargingTime" jdbcType="DECIMAL" />
+    <result column="PRIVATE_KEY_P" property="privateKeyP" jdbcType="VARCHAR" />
+    <result column="PUBLIC_KEY_P" property="publicKeyP" jdbcType="VARCHAR" />
+    <result column="PRIVATE_KEY_S" property="privateKeyS" jdbcType="VARCHAR" />
+    <result column="PUBLIC_KEY_S" property="publicKeyS" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID,
+    CONN_SIGN,
+    COMPANY_NAME,
+    COMPANY_CODE,
+    INTEGRAL,
+    INTEGRAL_MULT,
+    STATE,
+    SERVICE_URL,
+    P00001,
+    P00002,
+    P00003,
+    P00004,
+    P00005,
+    P00005_PARAM,
+    P00006,
+    P00006_PRICE,
+    P00007,
+    P00007_PRICE,
+    P00008,
+    P00008_PRICE,
+    P00009,
+    P00010,
+    P00010_PRICE,
+    P00011,
+    P00011_PRICE,
+    REC_TIME,
+    SOURCE_TYPE,
+    COMPANY_LEVEL,
+    EXCLUDED,
+    BIND_IP,
+    INTEGRAL_OVERDRAFT,
+    START_CHARGING_TIME,
+    PRIVATE_KEY_P,
+    PUBLIC_KEY_P,
+    PRIVATE_KEY_S,
+    PUBLIC_KEY_S
+  </sql>
+  <sql id= "TABLE_SEQ">
+    COMPANY_INFO_BEAN_ID_SEQUENCE.NEXTVAL
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    SELECT 
+    <include refid="Base_Column_List" />
+    FROM COMPANY_INFO_BEAN
+    WHERE ID = #{id,jdbcType=DECIMAL}
+  </select>
+  <select id= "selectList" resultMap ="BaseResultMap" parameterType= "java.util.Map" >
+		SELECT
+		<include refid ="Base_Column_List" />
+		 FROM ( SELECT t.*,rownum r FROM
+		( SELECT * FROM COMPANY_INFO_BEAN 
+			<if test ="condition != null">
+			WHERE ${condition}
+			</if >
+			<if test ="orderBy != null">
+					ORDER BY ${orderBy}
+			</if >
+		) t ) WHERE 1=1
+			<if test ="start != null">
+					AND r &gt; ${start}
+			</if >
+			<if test ="end != null">
+					AND r &lt;= ${end}
+			</if >
+	</select>
+  	<select id= "selectOne" resultMap ="BaseResultMap" parameterType= "java.util.Map" >
+		SELECT
+		<include refid ="Base_Column_List" />
+		  FROM COMPANY_INFO_BEAN  
+			<if test ="_parameter != null">
+			WHERE ${_parameter} AND rownum = 1
+			</if >
+	</select>
+    <select id= "selectCount" resultType ="java.lang.Long" parameterType= "java.lang.String" >
+		SELECT
+			COUNT(ID)
+		 FROM COMPANY_INFO_BEAN 
+		 <if test ="_parameter != null">
+			WHERE ${_parameter}
+		 </if >
+	</select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    DELETE FROM COMPANY_INFO_BEAN
+    WHERE ID = #{id,jdbcType=DECIMAL}
+  </delete>
+  <delete id="deleteByCondition" parameterType="java.lang.String" >
+    DELETE  FROM COMPANY_INFO_BEAN
+    WHERE ${_parameter}
+  </delete>
+  <insert id="insert" parameterType="com.xiaocui.dao.model.CompanyInfoBean" >
+    <selectKey keyProperty= "id" resultType ="java.lang.Long" order= "BEFORE">
+        SELECT <include refid ="TABLE_SEQ" /> FROM dual
+    </selectKey>
+    INSERT INTO COMPANY_INFO_BEAN (
+        ID,
+        CONN_SIGN,
+        COMPANY_NAME,
+        COMPANY_CODE,
+        INTEGRAL,
+        INTEGRAL_MULT,
+        STATE,
+        SERVICE_URL,
+        P00001,
+        P00002,
+        P00003,
+        P00004,
+        P00005,
+        P00005_PARAM,
+        P00006,
+        P00006_PRICE,
+        P00007,
+        P00007_PRICE,
+        P00008,
+        P00008_PRICE,
+        P00009,
+        P00010,
+        P00010_PRICE,
+        P00011,
+        P00011_PRICE,
+        REC_TIME,
+        SOURCE_TYPE,
+        COMPANY_LEVEL,
+        EXCLUDED,
+        BIND_IP,
+        INTEGRAL_OVERDRAFT,
+        START_CHARGING_TIME,
+        PRIVATE_KEY_P,
+        PUBLIC_KEY_P,
+        PRIVATE_KEY_S,
+        PUBLIC_KEY_S
+      )
+    VALUES (
+        #{id,jdbcType=DECIMAL},
+        #{connSign,jdbcType=VARCHAR},
+        #{companyName,jdbcType=VARCHAR},
+        #{companyCode,jdbcType=VARCHAR},
+        #{integral,jdbcType=DECIMAL},
+        #{integralMult,jdbcType=SMALLINT},
+        #{state,jdbcType=SMALLINT},
+        #{serviceUrl,jdbcType=VARCHAR},
+        #{p00001,jdbcType=SMALLINT},
+        #{p00002,jdbcType=SMALLINT},
+        #{p00003,jdbcType=SMALLINT},
+        #{p00004,jdbcType=SMALLINT},
+        #{p00005,jdbcType=SMALLINT},
+        #{p00005Param,jdbcType=SMALLINT},
+        #{p00006,jdbcType=SMALLINT},
+        #{p00006Price,jdbcType=DECIMAL},
+        #{p00007,jdbcType=SMALLINT},
+        #{p00007Price,jdbcType=DECIMAL},
+        #{p00008,jdbcType=SMALLINT},
+        #{p00008Price,jdbcType=DECIMAL},
+        #{p00009,jdbcType=SMALLINT},
+        #{p00010,jdbcType=SMALLINT},
+        #{p00010Price,jdbcType=DECIMAL},
+        #{p00011,jdbcType=SMALLINT},
+        #{p00011Price,jdbcType=DECIMAL},
+        #{recTime,jdbcType=DECIMAL},
+        #{sourceType,jdbcType=SMALLINT},
+        #{companyLevel,jdbcType=SMALLINT},
+        #{excluded,jdbcType=VARCHAR},
+        #{bindIp,jdbcType=VARCHAR},
+        #{integralOverdraft,jdbcType=DECIMAL},
+        #{startChargingTime,jdbcType=DECIMAL},
+        #{privateKeyP,jdbcType=VARCHAR},
+        #{publicKeyP,jdbcType=VARCHAR},
+        #{privateKeyS,jdbcType=VARCHAR},
+        #{publicKeyS,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.xiaocui.dao.model.CompanyInfoBean" >
+    <selectKey keyProperty= "id" resultType ="java.lang.Long" order= "BEFORE">
+        SELECT <include refid ="TABLE_SEQ" /> from dual
+    </selectKey>
+    INSERT INTO COMPANY_INFO_BEAN
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="connSign != null" >
+        CONN_SIGN,
+      </if>
+      <if test="companyName != null" >
+        COMPANY_NAME,
+      </if>
+      <if test="companyCode != null" >
+        COMPANY_CODE,
+      </if>
+      <if test="integral != null" >
+        INTEGRAL,
+      </if>
+      <if test="integralMult != null" >
+        INTEGRAL_MULT,
+      </if>
+      <if test="state != null" >
+        STATE,
+      </if>
+      <if test="serviceUrl != null" >
+        SERVICE_URL,
+      </if>
+      <if test="p00001 != null" >
+        P00001,
+      </if>
+      <if test="p00002 != null" >
+        P00002,
+      </if>
+      <if test="p00003 != null" >
+        P00003,
+      </if>
+      <if test="p00004 != null" >
+        P00004,
+      </if>
+      <if test="p00005 != null" >
+        P00005,
+      </if>
+      <if test="p00005Param != null" >
+        P00005_PARAM,
+      </if>
+      <if test="p00006 != null" >
+        P00006,
+      </if>
+      <if test="p00006Price != null" >
+        P00006_PRICE,
+      </if>
+      <if test="p00007 != null" >
+        P00007,
+      </if>
+      <if test="p00007Price != null" >
+        P00007_PRICE,
+      </if>
+      <if test="p00008 != null" >
+        P00008,
+      </if>
+      <if test="p00008Price != null" >
+        P00008_PRICE,
+      </if>
+      <if test="p00009 != null" >
+        P00009,
+      </if>
+      <if test="p00010 != null" >
+        P00010,
+      </if>
+      <if test="p00010Price != null" >
+        P00010_PRICE,
+      </if>
+      <if test="p00011 != null" >
+        P00011,
+      </if>
+      <if test="p00011Price != null" >
+        P00011_PRICE,
+      </if>
+      <if test="recTime != null" >
+        REC_TIME,
+      </if>
+      <if test="sourceType != null" >
+        SOURCE_TYPE,
+      </if>
+      <if test="companyLevel != null" >
+        COMPANY_LEVEL,
+      </if>
+      <if test="excluded != null" >
+        EXCLUDED,
+      </if>
+      <if test="bindIp != null" >
+        BIND_IP,
+      </if>
+      <if test="integralOverdraft != null" >
+        INTEGRAL_OVERDRAFT,
+      </if>
+      <if test="startChargingTime != null" >
+        START_CHARGING_TIME,
+      </if>
+      <if test="privateKeyP != null" >
+        PRIVATE_KEY_P,
+      </if>
+      <if test="publicKeyP != null" >
+        PUBLIC_KEY_P,
+      </if>
+      <if test="privateKeyS != null" >
+        PRIVATE_KEY_S,
+      </if>
+      <if test="publicKeyS != null" >
+        PUBLIC_KEY_S,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=DECIMAL},
+      </if>
+      <if test="connSign != null" >
+        #{connSign,jdbcType=VARCHAR},
+      </if>
+      <if test="companyName != null" >
+        #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="companyCode != null" >
+        #{companyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="integral != null" >
+        #{integral,jdbcType=DECIMAL},
+      </if>
+      <if test="integralMult != null" >
+        #{integralMult,jdbcType=SMALLINT},
+      </if>
+      <if test="state != null" >
+        #{state,jdbcType=SMALLINT},
+      </if>
+      <if test="serviceUrl != null" >
+        #{serviceUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="p00001 != null" >
+        #{p00001,jdbcType=SMALLINT},
+      </if>
+      <if test="p00002 != null" >
+        #{p00002,jdbcType=SMALLINT},
+      </if>
+      <if test="p00003 != null" >
+        #{p00003,jdbcType=SMALLINT},
+      </if>
+      <if test="p00004 != null" >
+        #{p00004,jdbcType=SMALLINT},
+      </if>
+      <if test="p00005 != null" >
+        #{p00005,jdbcType=SMALLINT},
+      </if>
+      <if test="p00005Param != null" >
+        #{p00005Param,jdbcType=SMALLINT},
+      </if>
+      <if test="p00006 != null" >
+        #{p00006,jdbcType=SMALLINT},
+      </if>
+      <if test="p00006Price != null" >
+        #{p00006Price,jdbcType=DECIMAL},
+      </if>
+      <if test="p00007 != null" >
+        #{p00007,jdbcType=SMALLINT},
+      </if>
+      <if test="p00007Price != null" >
+        #{p00007Price,jdbcType=DECIMAL},
+      </if>
+      <if test="p00008 != null" >
+        #{p00008,jdbcType=SMALLINT},
+      </if>
+      <if test="p00008Price != null" >
+        #{p00008Price,jdbcType=DECIMAL},
+      </if>
+      <if test="p00009 != null" >
+        #{p00009,jdbcType=SMALLINT},
+      </if>
+      <if test="p00010 != null" >
+        #{p00010,jdbcType=SMALLINT},
+      </if>
+      <if test="p00010Price != null" >
+        #{p00010Price,jdbcType=DECIMAL},
+      </if>
+      <if test="p00011 != null" >
+        #{p00011,jdbcType=SMALLINT},
+      </if>
+      <if test="p00011Price != null" >
+        #{p00011Price,jdbcType=DECIMAL},
+      </if>
+      <if test="recTime != null" >
+        #{recTime,jdbcType=DECIMAL},
+      </if>
+      <if test="sourceType != null" >
+        #{sourceType,jdbcType=SMALLINT},
+      </if>
+      <if test="companyLevel != null" >
+        #{companyLevel,jdbcType=SMALLINT},
+      </if>
+      <if test="excluded != null" >
+        #{excluded,jdbcType=VARCHAR},
+      </if>
+      <if test="bindIp != null" >
+        #{bindIp,jdbcType=VARCHAR},
+      </if>
+      <if test="integralOverdraft != null" >
+        #{integralOverdraft,jdbcType=DECIMAL},
+      </if>
+      <if test="startChargingTime != null" >
+        #{startChargingTime,jdbcType=DECIMAL},
+      </if>
+      <if test="privateKeyP != null" >
+        #{privateKeyP,jdbcType=VARCHAR},
+      </if>
+      <if test="publicKeyP != null" >
+        #{publicKeyP,jdbcType=VARCHAR},
+      </if>
+      <if test="privateKeyS != null" >
+        #{privateKeyS,jdbcType=VARCHAR},
+      </if>
+      <if test="publicKeyS != null" >
+        #{publicKeyS,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xiaocui.dao.model.CompanyInfoBean" >
+    UPDATE COMPANY_INFO_BEAN
+    <set>
+      <if test="id != null" >
+        ID = #{id,jdbcType=DECIMAL},
+      </if>
+      <if test="connSign != null" >
+        CONN_SIGN = #{connSign,jdbcType=VARCHAR},
+      </if>
+      <if test="companyName != null" >
+        COMPANY_NAME = #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="companyCode != null" >
+        COMPANY_CODE = #{companyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="integral != null" >
+        INTEGRAL = #{integral,jdbcType=DECIMAL},
+      </if>
+      <if test="integralMult != null" >
+        INTEGRAL_MULT = #{integralMult,jdbcType=SMALLINT},
+      </if>
+      <if test="state != null" >
+        STATE = #{state,jdbcType=SMALLINT},
+      </if>
+      <if test="serviceUrl != null" >
+        SERVICE_URL = #{serviceUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="p00001 != null" >
+        P00001 = #{p00001,jdbcType=SMALLINT},
+      </if>
+      <if test="p00002 != null" >
+        P00002 = #{p00002,jdbcType=SMALLINT},
+      </if>
+      <if test="p00003 != null" >
+        P00003 = #{p00003,jdbcType=SMALLINT},
+      </if>
+      <if test="p00004 != null" >
+        P00004 = #{p00004,jdbcType=SMALLINT},
+      </if>
+      <if test="p00005 != null" >
+        P00005 = #{p00005,jdbcType=SMALLINT},
+      </if>
+      <if test="p00005Param != null" >
+        P00005_PARAM = #{p00005Param,jdbcType=SMALLINT},
+      </if>
+      <if test="p00006 != null" >
+        P00006 = #{p00006,jdbcType=SMALLINT},
+      </if>
+      <if test="p00006Price != null" >
+        P00006_PRICE = #{p00006Price,jdbcType=DECIMAL},
+      </if>
+      <if test="p00007 != null" >
+        P00007 = #{p00007,jdbcType=SMALLINT},
+      </if>
+      <if test="p00007Price != null" >
+        P00007_PRICE = #{p00007Price,jdbcType=DECIMAL},
+      </if>
+      <if test="p00008 != null" >
+        P00008 = #{p00008,jdbcType=SMALLINT},
+      </if>
+      <if test="p00008Price != null" >
+        P00008_PRICE = #{p00008Price,jdbcType=DECIMAL},
+      </if>
+      <if test="p00009 != null" >
+        P00009 = #{p00009,jdbcType=SMALLINT},
+      </if>
+      <if test="p00010 != null" >
+        P00010 = #{p00010,jdbcType=SMALLINT},
+      </if>
+      <if test="p00010Price != null" >
+        P00010_PRICE = #{p00010Price,jdbcType=DECIMAL},
+      </if>
+      <if test="p00011 != null" >
+        P00011 = #{p00011,jdbcType=SMALLINT},
+      </if>
+      <if test="p00011Price != null" >
+        P00011_PRICE = #{p00011Price,jdbcType=DECIMAL},
+      </if>
+      <if test="recTime != null" >
+        REC_TIME = #{recTime,jdbcType=DECIMAL},
+      </if>
+      <if test="sourceType != null" >
+        SOURCE_TYPE = #{sourceType,jdbcType=SMALLINT},
+      </if>
+      <if test="companyLevel != null" >
+        COMPANY_LEVEL = #{companyLevel,jdbcType=SMALLINT},
+      </if>
+      <if test="excluded != null" >
+        EXCLUDED = #{excluded,jdbcType=VARCHAR},
+      </if>
+      <if test="bindIp != null" >
+        BIND_IP = #{bindIp,jdbcType=VARCHAR},
+      </if>
+      <if test="integralOverdraft != null" >
+        INTEGRAL_OVERDRAFT = #{integralOverdraft,jdbcType=DECIMAL},
+      </if>
+      <if test="startChargingTime != null" >
+        START_CHARGING_TIME = #{startChargingTime,jdbcType=DECIMAL},
+      </if>
+      <if test="privateKeyP != null" >
+        PRIVATE_KEY_P = #{privateKeyP,jdbcType=VARCHAR},
+      </if>
+      <if test="publicKeyP != null" >
+        PUBLIC_KEY_P = #{publicKeyP,jdbcType=VARCHAR},
+      </if>
+      <if test="privateKeyS != null" >
+        PRIVATE_KEY_S = #{privateKeyS,jdbcType=VARCHAR},
+      </if>
+      <if test="publicKeyS != null" >
+        PUBLIC_KEY_S = #{publicKeyS,jdbcType=VARCHAR}
+      </if>
+    </set>
+    WHERE ID = #{id,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xiaocui.dao.model.CompanyInfoBean" >
+    UPDATE COMPANY_INFO_BEAN 
+    <set>
+      <if test="connSign != null" >
+        CONN_SIGN = #{connSign,jdbcType=VARCHAR},
+      </if>
+      <if test="companyName != null" >
+        COMPANY_NAME = #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="companyCode != null" >
+        COMPANY_CODE = #{companyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="integral != null" >
+        INTEGRAL = #{integral,jdbcType=DECIMAL},
+      </if>
+      <if test="integralMult != null" >
+        INTEGRAL_MULT = #{integralMult,jdbcType=SMALLINT},
+      </if>
+      <if test="state != null" >
+        STATE = #{state,jdbcType=SMALLINT},
+      </if>
+      <if test="serviceUrl != null" >
+        SERVICE_URL = #{serviceUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="p00001 != null" >
+        P00001 = #{p00001,jdbcType=SMALLINT},
+      </if>
+      <if test="p00002 != null" >
+        P00002 = #{p00002,jdbcType=SMALLINT},
+      </if>
+      <if test="p00003 != null" >
+        P00003 = #{p00003,jdbcType=SMALLINT},
+      </if>
+      <if test="p00004 != null" >
+        P00004 = #{p00004,jdbcType=SMALLINT},
+      </if>
+      <if test="p00005 != null" >
+        P00005 = #{p00005,jdbcType=SMALLINT},
+      </if>
+      <if test="p00005Param != null" >
+        P00005_PARAM = #{p00005Param,jdbcType=SMALLINT},
+      </if>
+      <if test="p00006 != null" >
+        P00006 = #{p00006,jdbcType=SMALLINT},
+      </if>
+      <if test="p00006Price != null" >
+        P00006_PRICE = #{p00006Price,jdbcType=DECIMAL},
+      </if>
+      <if test="p00007 != null" >
+        P00007 = #{p00007,jdbcType=SMALLINT},
+      </if>
+      <if test="p00007Price != null" >
+        P00007_PRICE = #{p00007Price,jdbcType=DECIMAL},
+      </if>
+      <if test="p00008 != null" >
+        P00008 = #{p00008,jdbcType=SMALLINT},
+      </if>
+      <if test="p00008Price != null" >
+        P00008_PRICE = #{p00008Price,jdbcType=DECIMAL},
+      </if>
+      <if test="p00009 != null" >
+        P00009 = #{p00009,jdbcType=SMALLINT},
+      </if>
+      <if test="p00010 != null" >
+        P00010 = #{p00010,jdbcType=SMALLINT},
+      </if>
+      <if test="p00010Price != null" >
+        P00010_PRICE = #{p00010Price,jdbcType=DECIMAL},
+      </if>
+      <if test="p00011 != null" >
+        P00011 = #{p00011,jdbcType=SMALLINT},
+      </if>
+      <if test="p00011Price != null" >
+        P00011_PRICE = #{p00011Price,jdbcType=DECIMAL},
+      </if>
+      <if test="recTime != null" >
+        REC_TIME = #{recTime,jdbcType=DECIMAL},
+      </if>
+      <if test="sourceType != null" >
+        SOURCE_TYPE = #{sourceType,jdbcType=SMALLINT},
+      </if>
+      <if test="companyLevel != null" >
+        COMPANY_LEVEL = #{companyLevel,jdbcType=SMALLINT},
+      </if>
+      <if test="excluded != null" >
+        EXCLUDED = #{excluded,jdbcType=VARCHAR},
+      </if>
+      <if test="bindIp != null" >
+        BIND_IP = #{bindIp,jdbcType=VARCHAR},
+      </if>
+      <if test="integralOverdraft != null" >
+        INTEGRAL_OVERDRAFT = #{integralOverdraft,jdbcType=DECIMAL},
+      </if>
+      <if test="startChargingTime != null" >
+        START_CHARGING_TIME = #{startChargingTime,jdbcType=DECIMAL},
+      </if>
+      <if test="privateKeyP != null" >
+        PRIVATE_KEY_P = #{privateKeyP,jdbcType=VARCHAR},
+      </if>
+      <if test="publicKeyP != null" >
+        PUBLIC_KEY_P = #{publicKeyP,jdbcType=VARCHAR},
+      </if>
+      <if test="privateKeyS != null" >
+        PRIVATE_KEY_S = #{privateKeyS,jdbcType=VARCHAR},
+      </if>
+      <if test="publicKeyS != null" >
+        PUBLIC_KEY_S = #{publicKeyS,jdbcType=VARCHAR}
+      </if>
+      </set>
+    WHERE ID = #{id,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByCondition"  parameterType="java.util.Map" >
+    UPDATE COMPANY_INFO_BEAN SET 
+       <if test="set != null">
+       	${set}
+       </if>
+    WHERE 
+		<if test="condition != null">
+			${condition}
+		</if>
+  </update>
+</mapper>

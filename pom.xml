@@ -7,10 +7,10 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>jyzxclient_project</name>
-
 	<properties>
 		<spring.version>4.2.2.RELEASE</spring.version>
-		<mybatis.version>3.3.0</mybatis.version>
+        <mybatis.version>3.4.1</mybatis.version>
+        <log4j.version>1.2.17</log4j.version>
 	</properties>
 
 	<dependencies>
@@ -47,6 +47,11 @@
 		<module>jyzxclient_common</module>
 		<module>jyzxclient_dao</module>
 		<module>jyzxclient_web</module>
+  		<module>jyzxclient_mgr</module>
+    <module>jyzxclient_jfinalDemo</module>
+    <module>Jyzxclient_activemq</module>
+    <module>jyzxclient_activemq</module>
+    <module>jyzx</module>
 	</modules>
 
 	<build>

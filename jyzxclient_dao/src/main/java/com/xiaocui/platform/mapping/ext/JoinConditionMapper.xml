@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaocui.platform.dao.ext.JoinConditionExtMapper" >
+  <resultMap id="BaseResultMap" type="com.xiaocui.platform.model.ext.JoinConditionExt" >
+    <id column="ID" property="id" jdbcType="DECIMAL" />
+    <result column="COMPANY_ID" property="companyId" jdbcType="DECIMAL" />
+    <result column="COMPANY_NAME" property="companyName" jdbcType="VARCHAR" />
+    <result column="START_TIME" property="startTime" jdbcType="DECIMAL" />
+    <result column="END_TIME" property="endTime" jdbcType="DECIMAL" />
+    <result column="JOIN_STATE" property="joinState" jdbcType="SMALLINT" />
+    <result column="TIME_INFORMATION" property="timeInformation" jdbcType="VARCHAR" />
+    <result column="REMARK" property="remark" jdbcType="VARCHAR" />
+    <result column="BD_NAME" property="bdName" jdbcType="VARCHAR" />
+    <result column="CLIENT_EMAIL" property="clientEmail" jdbcType="VARCHAR" />
+    <result column="UPDATE_TIME" property="updateTime" jdbcType="DECIMAL" />
+    <result column="IS_P3001" property="isP3001" jdbcType="SMALLINT" />
+    <result column="REC_TIME" property="recTime" jdbcType="DECIMAL" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID,
+    COMPANY_ID,
+    COMPANY_NAME,
+    START_TIME,
+    END_TIME,
+    JOIN_STATE,
+    TIME_INFORMATION,
+    REMARK,
+    BD_NAME,
+    CLIENT_EMAIL,
+    UPDATE_TIME,
+    IS_P3001,
+    REC_TIME
+  </sql>
+
+    <select id= "selectList" resultMap ="BaseResultMap" parameterType= "java.util.Map" >
+		SELECT
+		<include refid ="Base_Column_List" />
+		 FROM ( SELECT t.*,rownum r FROM
+		( SELECT * FROM (
+				SELECT co.COMPANY_NAME,jo.* 
+				FROM JOIN_CONDITION jo LEFT JOIN COMPANY_INFO co on jo.COMPANY_ID = CO.ID) 
+			<if test ="condition != null">
+			WHERE ${condition}
+			</if >
+			<if test ="orderBy != null">
+					ORDER BY ${orderBy}
+			</if >
+		) t ) WHERE 1=1
+			<if test ="start != null">
+					AND r &gt; ${start}
+			</if >
+			<if test ="end != null">
+					AND r &lt;= ${end}
+			</if >
+	</select>
+    <select id= "selectCount" resultType ="java.lang.Long" parameterType= "java.lang.String" >
+		SELECT
+			COUNT(ID)
+		 FROM (
+				SELECT co.COMPANY_NAME,jo.* 
+				FROM JOIN_CONDITION jo LEFT JOIN COMPANY_INFO co on jo.COMPANY_ID = CO.ID) 
+		 <if test ="_parameter != null">
+			WHERE ${_parameter}
+		 </if >
+	</select>
+	
+	<select id= "selectOne" resultMap ="BaseResultMap" parameterType= "java.lang.String" >
+		SELECT
+		<include refid ="Base_Column_List" />
+		  FROM (
+				SELECT co.COMPANY_NAME,jo.* 
+				FROM JOIN_CONDITION jo LEFT JOIN COMPANY_INFO co on jo.COMPANY_ID = CO.ID)   
+			<if test ="_parameter != null">
+			WHERE ${_parameter} AND rownum = 1
+			</if >
+	</select>
+	
+</mapper>

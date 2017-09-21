@@ -2,7 +2,7 @@ package com.xiaocui.service;
 
 import com.xiaocui.entity.PkgHeader;
 
-public interface ITask {
+public abstract interface ITask {
 	/**
 	 * 
 	* @Title: doTask 

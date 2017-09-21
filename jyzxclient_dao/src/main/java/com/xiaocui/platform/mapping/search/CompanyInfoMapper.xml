@@ -1,0 +1,400 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaocui.platform.dao.search.CompanyInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.xiaocui.platform.model.search.CompanyInfo" >
+    <id column="ID" property="id" jdbcType="DECIMAL" />
+    <result column="CONN_SIGN" property="connSign" jdbcType="VARCHAR" />
+    <result column="COMPANY_NAME" property="companyName" jdbcType="VARCHAR" />
+    <result column="COMPANY_CODE" property="companyCode" jdbcType="VARCHAR" />
+    <result column="INTEGRAL" property="integral" jdbcType="DECIMAL" />
+    <result column="STATE" property="state" jdbcType="SMALLINT" />
+    <result column="SERVICE_URL" property="serviceUrl" jdbcType="VARCHAR" />
+    <result column="P00001" property="p00001" jdbcType="SMALLINT" />
+    <result column="P00002" property="p00002" jdbcType="SMALLINT" />
+    <result column="P00003" property="p00003" jdbcType="SMALLINT" />
+    <result column="P00004" property="p00004" jdbcType="SMALLINT" />
+    <result column="REC_TIME" property="recTime" jdbcType="DECIMAL" />
+    <result column="SOURCE_TYPE" property="sourceType" jdbcType="SMALLINT" />
+    <result column="EXCLUDED" property="excluded" jdbcType="VARCHAR" />
+    <result column="BIND_IP" property="bindIp" jdbcType="VARCHAR" />
+    <result column="INTEGRAL_OVERDRAFT" property="integralOverdraft" jdbcType="DECIMAL" />
+    <result column="START_CHARGING_TIME" property="startChargingTime" jdbcType="DECIMAL" />
+    <result column="P00005" property="p00005" jdbcType="SMALLINT" />
+    <result column="P00005_PARAM" property="p00005Param" jdbcType="SMALLINT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID,
+    CONN_SIGN,
+    COMPANY_NAME,
+    COMPANY_CODE,
+    INTEGRAL,
+    STATE,
+    SERVICE_URL,
+    P00001,
+    P00002,
+    P00003,
+    P00004,
+    REC_TIME,
+    SOURCE_TYPE,
+    EXCLUDED,
+    BIND_IP,
+    INTEGRAL_OVERDRAFT,
+    START_CHARGING_TIME,
+    P00005,
+    P00005_PARAM
+  </sql>
+  <sql id= "TABLE_SEQ">
+    COMPANY_INFO_ID_SEQUENCE.NEXTVAL
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    SELECT 
+    <include refid="Base_Column_List" />
+    FROM COMPANY_INFO
+    WHERE ID = #{id,jdbcType=DECIMAL}
+  </select>
+  <select id= "selectList" resultMap ="BaseResultMap" parameterType= "java.util.Map" >
+		SELECT
+		<include refid ="Base_Column_List" />
+		 FROM ( SELECT t.*,rownum r FROM
+		( SELECT * FROM COMPANY_INFO 
+			<if test ="condition != null">
+			WHERE ${condition}
+			</if >
+			<if test ="orderBy != null">
+					ORDER BY ${orderBy}
+			</if >
+		) t ) WHERE 1=1
+			<if test ="start != null">
+					AND r &gt; ${start}
+			</if >
+			<if test ="end != null">
+					AND r &lt;= ${end}
+			</if >
+	</select>
+  	<select id= "selectOne" resultMap ="BaseResultMap" parameterType= "java.util.Map" >
+		SELECT
+		<include refid ="Base_Column_List" />
+		  FROM COMPANY_INFO  
+			<if test ="_parameter != null">
+			WHERE ${_parameter} AND rownum = 1
+			</if >
+	</select>
+    <select id= "selectCount" resultType ="java.lang.Long" parameterType= "java.lang.String" >
+		SELECT
+			COUNT(ID)
+		 FROM COMPANY_INFO 
+		 <if test ="_parameter != null">
+			WHERE ${_parameter}
+		 </if >
+	</select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    DELETE FROM COMPANY_INFO
+    WHERE ID = #{id,jdbcType=DECIMAL}
+  </delete>
+  <delete id="deleteByCondition" parameterType="java.lang.String" >
+    DELETE  FROM COMPANY_INFO
+    WHERE ${_parameter}
+  </delete>
+  <insert id="insert" parameterType="com.xiaocui.platform.model.search.CompanyInfo" >
+    <selectKey keyProperty= "id" resultType ="java.lang.Long" order= "BEFORE">
+        SELECT <include refid ="TABLE_SEQ" /> FROM dual
+    </selectKey>
+    INSERT INTO COMPANY_INFO (
+        ID,
+        CONN_SIGN,
+        COMPANY_NAME,
+        COMPANY_CODE,
+        INTEGRAL,
+        STATE,
+        SERVICE_URL,
+        P00001,
+        P00002,
+        P00003,
+        P00004,
+        REC_TIME,
+        SOURCE_TYPE,
+        EXCLUDED,
+        BIND_IP,
+        INTEGRAL_OVERDRAFT,
+        START_CHARGING_TIME,
+        P00005,
+        P00005_PARAM
+      )
+    VALUES (
+        #{id,jdbcType=DECIMAL},
+        #{connSign,jdbcType=VARCHAR},
+        #{companyName,jdbcType=VARCHAR},
+        #{companyCode,jdbcType=VARCHAR},
+        #{integral,jdbcType=DECIMAL},
+        #{state,jdbcType=SMALLINT},
+        #{serviceUrl,jdbcType=VARCHAR},
+        #{p00001,jdbcType=SMALLINT},
+        #{p00002,jdbcType=SMALLINT},
+        #{p00003,jdbcType=SMALLINT},
+        #{p00004,jdbcType=SMALLINT},
+        #{recTime,jdbcType=DECIMAL},
+        #{sourceType,jdbcType=SMALLINT},
+        #{excluded,jdbcType=VARCHAR},
+        #{bindIp,jdbcType=VARCHAR},
+        #{integralOverdraft,jdbcType=DECIMAL},
+        #{startChargingTime,jdbcType=DECIMAL},
+        #{p00005,jdbcType=SMALLINT},
+        #{p00005Param,jdbcType=SMALLINT}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.xiaocui.platform.model.search.CompanyInfo" >
+    <selectKey keyProperty= "id" resultType ="java.lang.Long" order= "BEFORE">
+        SELECT <include refid ="TABLE_SEQ" /> from dual
+    </selectKey>
+    INSERT INTO COMPANY_INFO
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="connSign != null" >
+        CONN_SIGN,
+      </if>
+      <if test="companyName != null" >
+        COMPANY_NAME,
+      </if>
+      <if test="companyCode != null" >
+        COMPANY_CODE,
+      </if>
+      <if test="integral != null" >
+        INTEGRAL,
+      </if>
+      <if test="state != null" >
+        STATE,
+      </if>
+      <if test="serviceUrl != null" >
+        SERVICE_URL,
+      </if>
+      <if test="p00001 != null" >
+        P00001,
+      </if>
+      <if test="p00002 != null" >
+        P00002,
+      </if>
+      <if test="p00003 != null" >
+        P00003,
+      </if>
+      <if test="p00004 != null" >
+        P00004,
+      </if>
+      <if test="recTime != null" >
+        REC_TIME,
+      </if>
+      <if test="sourceType != null" >
+        SOURCE_TYPE,
+      </if>
+      <if test="excluded != null" >
+        EXCLUDED,
+      </if>
+      <if test="bindIp != null" >
+        BIND_IP,
+      </if>
+      <if test="integralOverdraft != null" >
+        INTEGRAL_OVERDRAFT,
+      </if>
+      <if test="startChargingTime != null" >
+        START_CHARGING_TIME,
+      </if>
+      <if test="p00005 != null" >
+        P00005,
+      </if>
+      <if test="p00005Param != null" >
+        P00005_PARAM,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=DECIMAL},
+      </if>
+      <if test="connSign != null" >
+        #{connSign,jdbcType=VARCHAR},
+      </if>
+      <if test="companyName != null" >
+        #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="companyCode != null" >
+        #{companyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="integral != null" >
+        #{integral,jdbcType=DECIMAL},
+      </if>
+      <if test="state != null" >
+        #{state,jdbcType=SMALLINT},
+      </if>
+      <if test="serviceUrl != null" >
+        #{serviceUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="p00001 != null" >
+        #{p00001,jdbcType=SMALLINT},
+      </if>
+      <if test="p00002 != null" >
+        #{p00002,jdbcType=SMALLINT},
+      </if>
+      <if test="p00003 != null" >
+        #{p00003,jdbcType=SMALLINT},
+      </if>
+      <if test="p00004 != null" >
+        #{p00004,jdbcType=SMALLINT},
+      </if>
+      <if test="recTime != null" >
+        #{recTime,jdbcType=DECIMAL},
+      </if>
+      <if test="sourceType != null" >
+        #{sourceType,jdbcType=SMALLINT},
+      </if>
+      <if test="excluded != null" >
+        #{excluded,jdbcType=VARCHAR},
+      </if>
+      <if test="bindIp != null" >
+        #{bindIp,jdbcType=VARCHAR},
+      </if>
+      <if test="integralOverdraft != null" >
+        #{integralOverdraft,jdbcType=DECIMAL},
+      </if>
+      <if test="startChargingTime != null" >
+        #{startChargingTime,jdbcType=DECIMAL},
+      </if>
+      <if test="p00005 != null" >
+        #{p00005,jdbcType=SMALLINT},
+      </if>
+      <if test="p00005Param != null" >
+        #{p00005Param,jdbcType=SMALLINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xiaocui.platform.model.search.CompanyInfo" >
+    UPDATE COMPANY_INFO
+    <set >
+      <if test="id != null" >
+        ID = #{id,jdbcType=DECIMAL},
+      </if>
+      <if test="connSign != null" >
+        CONN_SIGN = #{connSign,jdbcType=VARCHAR},
+      </if>
+      <if test="companyName != null" >
+        COMPANY_NAME = #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="companyCode != null" >
+        COMPANY_CODE = #{companyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="integral != null" >
+        INTEGRAL = #{integral,jdbcType=DECIMAL},
+      </if>
+      <if test="state != null" >
+        STATE = #{state,jdbcType=SMALLINT},
+      </if>
+      <if test="serviceUrl != null" >
+        SERVICE_URL = #{serviceUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="p00001 != null" >
+        P00001 = #{p00001,jdbcType=SMALLINT},
+      </if>
+      <if test="p00002 != null" >
+        P00002 = #{p00002,jdbcType=SMALLINT},
+      </if>
+      <if test="p00003 != null" >
+        P00003 = #{p00003,jdbcType=SMALLINT},
+      </if>
+      <if test="p00004 != null" >
+        P00004 = #{p00004,jdbcType=SMALLINT},
+      </if>
+      <if test="recTime != null" >
+        REC_TIME = #{recTime,jdbcType=DECIMAL},
+      </if>
+      <if test="sourceType != null" >
+        SOURCE_TYPE = #{sourceType,jdbcType=SMALLINT},
+      </if>
+      <if test="excluded != null" >
+        EXCLUDED = #{excluded,jdbcType=VARCHAR},
+      </if>
+      <if test="bindIp != null" >
+        BIND_IP = #{bindIp,jdbcType=VARCHAR},
+      </if>
+      <if test="integralOverdraft != null" >
+        INTEGRAL_OVERDRAFT = #{integralOverdraft,jdbcType=DECIMAL},
+      </if>
+      <if test="startChargingTime != null" >
+        START_CHARGING_TIME = #{startChargingTime,jdbcType=DECIMAL},
+      </if>
+      <if test="p00005 != null" >
+        P00005 = #{p00005,jdbcType=SMALLINT},
+      </if>
+      <if test="p00005Param != null" >
+        P00005_PARAM = #{p00005Param,jdbcType=SMALLINT}
+      </if>
+    </set>
+    WHERE ID = #{id,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xiaocui.platform.model.search.CompanyInfo" >
+    UPDATE COMPANY_INFO SET 
+      <if test="connSign != null" >
+        CONN_SIGN = #{connSign,jdbcType=VARCHAR},
+      </if>
+      <if test="companyName != null" >
+        COMPANY_NAME = #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="companyCode != null" >
+        COMPANY_CODE = #{companyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="integral != null" >
+        INTEGRAL = #{integral,jdbcType=DECIMAL},
+      </if>
+      <if test="state != null" >
+        STATE = #{state,jdbcType=SMALLINT},
+      </if>
+      <if test="serviceUrl != null" >
+        SERVICE_URL = #{serviceUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="p00001 != null" >
+        P00001 = #{p00001,jdbcType=SMALLINT},
+      </if>
+      <if test="p00002 != null" >
+        P00002 = #{p00002,jdbcType=SMALLINT},
+      </if>
+      <if test="p00003 != null" >
+        P00003 = #{p00003,jdbcType=SMALLINT},
+      </if>
+      <if test="p00004 != null" >
+        P00004 = #{p00004,jdbcType=SMALLINT},
+      </if>
+      <if test="recTime != null" >
+        REC_TIME = #{recTime,jdbcType=DECIMAL},
+      </if>
+      <if test="sourceType != null" >
+        SOURCE_TYPE = #{sourceType,jdbcType=SMALLINT},
+      </if>
+      <if test="excluded != null" >
+        EXCLUDED = #{excluded,jdbcType=VARCHAR},
+      </if>
+      <if test="bindIp != null" >
+        BIND_IP = #{bindIp,jdbcType=VARCHAR},
+      </if>
+      <if test="integralOverdraft != null" >
+        INTEGRAL_OVERDRAFT = #{integralOverdraft,jdbcType=DECIMAL},
+      </if>
+      <if test="startChargingTime != null" >
+        START_CHARGING_TIME = #{startChargingTime,jdbcType=DECIMAL},
+      </if>
+      <if test="p00005 != null" >
+        P00005 = #{p00005,jdbcType=SMALLINT},
+      </if>
+      <if test="p00005Param != null" >
+        P00005_PARAM = #{p00005Param,jdbcType=SMALLINT}
+      </if>
+    WHERE ID = #{id,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByCondition"  parameterType="java.util.Map" >
+    UPDATE COMPANY_INFO SET 
+       <if test="set != null">
+       	${set}
+       </if>
+    WHERE 
+		<if test="condition != null">
+			${condition}
+		</if>
+  </update>
+</mapper>

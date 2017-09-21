@@ -1,0 +1,17 @@
+.icefox_viewtable {
+    width: 100%;
+    border-collapse: collapse;
+    border-color:#333333;
+    background-color:#cccc99;
+}
+
+.icefox_viewtable .grouptitle {
+    font-weight: bold;
+
+    background-color: #afafaf;
+}
+
+.icefox_viewtable .fieldtitle {
+    font-weight: bold;
+    background-color:#ccccff;
+}

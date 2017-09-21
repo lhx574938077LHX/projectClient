@@ -1,0 +1,287 @@
+﻿<%@ CodeTemplate Language="C#" TargetLanguage="XML" Description="2.生成Mapper" %>
+<%@ XmlProperty Name="CommonEntity" Schema="CommonEntity.xsd" Optional="True"  Default="TableEntity.xml" Description="实体类对象XML描述文档" %>
+<%@ Property Name="EntityName" Type="System.String" Optional="True" Category="Context" Description="实体类名" %>
+
+<%@ Assembly Src="Common.cs" %>
+<%@ Import Namespace="Com.IceFox.Utils" %>
+
+<%
+    foreach(Entity entity in CommonEntity.Entities)
+    {
+        if(entity.Name == EntityName)
+        {
+%>
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="<%=entity.Namespace%>.dao.<%=String.IsNullOrEmpty(entity.SubPackage)?"":entity.SubPackage+"."%><%=Common.ConvertOTJ(entity.Name)%>Mapper" >
+  <resultMap id="BaseResultMap" type="<%=entity.Namespace%>.model.<%=String.IsNullOrEmpty(entity.SubPackage)?"":entity.SubPackage+"."%><%=Common.ConvertOTJ(entity.Name)%>" >
+    <%
+        for(int i=0;i<entity.Properties.Count;i++){
+    %>
+    <<%=entity.Properties[i].Name.ToLower()=="id"?"id":"result"%> column="<%=entity.Properties[i].Name%>" property="<%=Common.InitialToLower(Common.ConvertOTJ(entity.Properties[i].Name),false)%>" jdbcType="<%=entity.Properties[i].JdbcType%>" />
+    <%
+        }
+    %>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    <%
+        for(int i=0;i<entity.Properties.Count;i++){
+    %>
+    <%=entity.Properties[i].Name%><%=i!=entity.Properties.Count-1?",":""%>
+    <%
+        }
+    %>
+  </sql>
+  <sql id= "TABLE_SEQ">
+    <%=entity.Name%>_ID_SEQUENCE.NEXTVAL
+  </sql>
+<%if(!entity.SplitTable){%>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    SELECT 
+    <include refid="Base_Column_List" />
+    FROM <%=entity.Name%>
+    WHERE ID = #{id,jdbcType=<%=GetFieldJdbcType(entity.Properties,"ID")%>}
+  </select>
+  <select id= "selectList" resultMap ="BaseResultMap" parameterType= "java.util.Map" >
+		SELECT
+		<include refid ="Base_Column_List" />
+		 FROM ( SELECT t.*,rownum r FROM
+		( SELECT * FROM <%=entity.Name%> 
+			<if test ="condition != null">
+			WHERE ${condition}
+			</if >
+			<if test ="orderBy != null">
+					ORDER BY ${orderBy}
+			</if >
+		) t ) WHERE 1=1
+			<if test ="start != null">
+					AND r &gt; ${start}
+			</if >
+			<if test ="end != null">
+					AND r &lt;= ${end}
+			</if >
+	</select>
+  	<select id= "selectOne" resultMap ="BaseResultMap" parameterType= "java.util.Map" >
+		SELECT
+		<include refid ="Base_Column_List" />
+		  FROM <%=entity.Name%>  
+			<if test ="_parameter != null">
+			WHERE ${_parameter} AND rownum = 1
+			</if >
+	</select>
+    <select id= "selectCount" resultType ="java.lang.Long" parameterType= "java.lang.String" >
+		SELECT
+			COUNT(ID)
+		 FROM <%=entity.Name%> 
+		 <if test ="_parameter != null">
+			WHERE ${_parameter}
+		 </if >
+	</select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    DELETE FROM <%=entity.Name%>
+    WHERE ID = #{id,jdbcType=<%=GetFieldJdbcType(entity.Properties,"ID")%>}
+  </delete>
+  <delete id="deleteByCondition" parameterType="java.lang.String" >
+    DELETE  FROM <%=entity.Name%>
+    WHERE ${_parameter}
+  </delete>
+  <insert id="insert" parameterType="<%=entity.Namespace%>.model.<%=String.IsNullOrEmpty(entity.SubPackage)?"":entity.SubPackage+"."%><%=Common.ConvertOTJ(entity.Name)%>" >
+    <selectKey keyProperty= "id" resultType ="java.lang.Long" order= "BEFORE">
+        SELECT <include refid ="TABLE_SEQ" /> FROM dual
+    </selectKey>
+    INSERT INTO <%=entity.Name%> (
+        <%
+            for(int i=0;i<entity.Properties.Count;i++){
+        %>
+        <%=entity.Properties[i].Name%><%=i!=entity.Properties.Count-1?",":""%>
+        <%
+            }
+        %>
+      )
+    VALUES (
+        <%
+            for(int i=0;i<entity.Properties.Count;i++){
+        %>
+        #{<%=Common.InitialToLower(Common.ConvertOTJ(entity.Properties[i].Name),false)%>,jdbcType=<%=entity.Properties[i].JdbcType%>}<%=i!=entity.Properties.Count-1?",":""%>
+        <%
+            }
+        %>
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="<%=entity.Namespace%>.model.<%=String.IsNullOrEmpty(entity.SubPackage)?"":entity.SubPackage+"."%><%=Common.ConvertOTJ(entity.Name)%>" >
+    <selectKey keyProperty= "id" resultType ="java.lang.Long" order= "BEFORE">
+        SELECT <include refid ="TABLE_SEQ" /> from dual
+    </selectKey>
+    INSERT INTO <%=entity.Name%>
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <%
+          for(int i=0;i<entity.Properties.Count;i++){
+      %>
+      <if test="<%=Common.InitialToLower(Common.ConvertOTJ(entity.Properties[i].Name),false)%> != null" >
+        <%=entity.Properties[i].Name%>,
+      </if>
+      <%
+          }
+      %>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <%
+          for(int i=0;i<entity.Properties.Count;i++){
+      %>
+      <if test="<%=Common.InitialToLower(Common.ConvertOTJ(entity.Properties[i].Name),false)%> != null" >
+        #{<%=Common.InitialToLower(Common.ConvertOTJ(entity.Properties[i].Name),false)%>,jdbcType=<%=entity.Properties[i].JdbcType%>},
+      </if>
+      <%
+          }
+      %>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="<%=entity.Namespace%>.model.<%=String.IsNullOrEmpty(entity.SubPackage)?"":entity.SubPackage+"."%><%=Common.ConvertOTJ(entity.Name)%>" >
+    UPDATE <%=entity.Name%>
+    <set >
+      <%
+          for(int i=0;i<entity.Properties.Count;i++){
+      %>
+      <if test="<%=Common.InitialToLower(Common.ConvertOTJ(entity.Properties[i].Name),false)%> != null" >
+        <%=entity.Properties[i].Name%> = #{<%=Common.InitialToLower(Common.ConvertOTJ(entity.Properties[i].Name),false)%>,jdbcType=<%=entity.Properties[i].JdbcType%>}<%=i!=entity.Properties.Count-1?",":""%>
+      </if>
+      <%
+          }
+      %>
+    </set>
+    WHERE ID = #{id,jdbcType=<%=GetFieldJdbcType(entity.Properties,"ID")%>}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="<%=entity.Namespace%>.model.<%=String.IsNullOrEmpty(entity.SubPackage)?"":entity.SubPackage+"."%><%=Common.ConvertOTJ(entity.Name)%>" >
+    UPDATE <%=entity.Name%> SET 
+      <%
+          for(int i=0;i<entity.Properties.Count;i++){
+            if(entity.Properties[i].Name.ToLower()!="id")
+            {
+      %>
+      <if test="<%=Common.InitialToLower(Common.ConvertOTJ(entity.Properties[i].Name),false)%> != null" >
+        <%=entity.Properties[i].Name%> = #{<%=Common.InitialToLower(Common.ConvertOTJ(entity.Properties[i].Name),false)%>,jdbcType=<%=entity.Properties[i].JdbcType%>}<%=i!=entity.Properties.Count-1?",":""%>
+      </if>
+      <%
+            }
+          }
+      %>
+    WHERE ID = #{id,jdbcType=<%=GetFieldJdbcType(entity.Properties,"ID")%>}
+  </update>
+  <update id="updateByCondition"  parameterType="java.util.Map" >
+    UPDATE <%=entity.Name%> SET 
+       <if test="set != null">
+       	${set}
+       </if>
+    WHERE 
+		<if test="condition != null">
+			${condition}
+		</if>
+  </update>
+<%}else{%>
+  <insert id="insert" parameterType="<%=entity.Namespace%>.model.<%=String.IsNullOrEmpty(entity.SubPackage)?"":entity.SubPackage+"."%><%=Common.ConvertOTJ(entity.Name)%>"  statementType="CALLABLE">
+    {
+      CALL SIP_<%=entity.Name%>(
+        <%
+            for(int i=0;i<entity.Properties.Count;i++){
+        %>
+        #{<%=Common.InitialToLower(Common.ConvertOTJ(entity.Properties[i].Name),false)%>,jdbcType=<%=entity.Properties[i].JdbcType%>,mode=<%=entity.Properties[i].Name=="ID"?"OUT":"IN"%>}<%=i!=entity.Properties.Count-1?",":""%>
+        <%
+            }
+        %>
+      )
+    }
+  </insert>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    SELECT 
+    <include refid="Base_Column_List" />
+    FROM <%=entity.Name%>_${@java.lang.Integer@valueOf(@java.lang.Math@ceil(_parameter.doubleValue()%<%=entity.MaxRow%>L))}
+    WHERE ID = #{id,jdbcType=DECIMAL}
+  </select>
+  <update id="updateByPrimaryKey" parameterType="<%=entity.Namespace%>.model.<%=String.IsNullOrEmpty(entity.SubPackage)?"":entity.SubPackage+"."%><%=Common.ConvertOTJ(entity.Name)%>" >
+    UPDATE <%=entity.Name%>_${@java.lang.Integer@valueOf(@java.lang.Math@ceil(id.doubleValue()%<%=entity.MaxRow%>L))} SET 
+      <%
+          for(int i=0;i<entity.Properties.Count;i++){
+            if(entity.Properties[i].Name.ToLower()!="id")
+            {
+      %>
+      <if test="<%=Common.InitialToLower(Common.ConvertOTJ(entity.Properties[i].Name),false)%> != null" >
+        <%=entity.Properties[i].Name%> = #{<%=Common.InitialToLower(Common.ConvertOTJ(entity.Properties[i].Name),false)%>,jdbcType=<%=entity.Properties[i].JdbcType%>}<%=i!=entity.Properties.Count-1?",":""%>
+      </if>
+      <%
+            }
+          }
+      %>
+    WHERE ID = #{id,jdbcType=<%=GetFieldJdbcType(entity.Properties,"ID")%>}
+  </update>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    DELETE FROM <%=entity.Name%>_${@java.lang.Integer@valueOf(@java.lang.Math@ceil(id.doubleValue()%<%=entity.MaxRow%>L))}
+    WHERE ID = #{_parameter,jdbcType=<%=GetFieldJdbcType(entity.Properties,"ID")%>}
+  </delete>
+<%}%>
+</mapper>
+<%
+        }
+    }
+%>
+
+<script runat="template">
+    /// <summary>
+    /// 获取字段大小和精度定义
+    /// </summary>
+    /// <param name="Property">属性类对象</param>
+    /// <returns>返回字段大小和精度定义</returns>
+    public static string GetColumnSize(Property property)
+    {
+        string tmpstr = "";
+        
+        switch(property.DbType)
+        {
+            case "NCHAR":
+                tmpstr += "(" + property.Size + " BYTE)";
+                break;
+            case "NUMBER":
+                tmpstr += "(" + property.Precision + "," + property.Scale + ")";
+                break;
+            case "NVARCHAR2":
+                tmpstr += "(" + property.Size + " BYTE)";
+                break;
+            case "VARCHAR2":
+                tmpstr += "(" + property.Size + " BYTE)";
+                break;
+			case "BFILE":
+            case "BLOB":
+            case "CHAR":
+            case "CLOB":
+            case "DATE":
+            case "FLOAT":
+            case "INTEGER":
+            case "LONG":
+            case "NCLOB":
+            case "RAW":
+            case "ROWID":
+            case "UROWID":
+            case "TIMESTAMP":
+            default:
+                break;
+        }
+        return tmpstr;
+    }
+    
+    /// <summary>
+    /// 返回指定字段的JdbcTtype
+    /// </summary>
+    /// <param name="properties">字段属性集合</param>
+    /// <param name="fieldName">字段名</param>
+    /// <returns></returns>
+    public static string GetFieldJdbcType(PropertyCollection properties,string fieldName)
+    {
+        for(int i=0;i<properties.Count;i++){
+            if(fieldName == properties[i].Name)
+            {
+                return properties[i].JdbcType;
+            }
+        }
+        
+        return "___UNKNOWFIELD___";
+    }
+</script>

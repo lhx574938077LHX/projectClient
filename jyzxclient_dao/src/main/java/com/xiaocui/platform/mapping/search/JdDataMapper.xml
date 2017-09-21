@@ -1,0 +1,304 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaocui.platform.dao.search.JdDataMapper" >
+  <resultMap id="BaseResultMap" type="com.xiaocui.platform.model.search.JdData" >
+    <id column="ID" property="id" jdbcType="DECIMAL" />
+    <result column="REAL_NAME" property="realName" jdbcType="VARCHAR" />
+    <result column="ID_CARD" property="idCard" jdbcType="VARCHAR" />
+    <result column="COMPANY_ID" property="companyId" jdbcType="DECIMAL" />
+    <result column="COMPANY_CODE" property="companyCode" jdbcType="VARCHAR" />
+    <result column="BORROW_TYPE" property="borrowType" jdbcType="SMALLINT" />
+    <result column="BORROW_STATE" property="borrowState" jdbcType="SMALLINT" />
+    <result column="BORROW_AMOUNT" property="borrowAmount" jdbcType="SMALLINT" />
+    <result column="CONTRACT_DATE" property="contractDate" jdbcType="DECIMAL" />
+    <result column="LOAN_PERIOD" property="loanPeriod" jdbcType="SMALLINT" />
+    <result column="REPAY_STATE" property="repayState" jdbcType="SMALLINT" />
+    <result column="ARREARS_AMOUNT" property="arrearsAmount" jdbcType="DECIMAL" />
+    <result column="REC_TIME" property="recTime" jdbcType="DECIMAL" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID,
+    REAL_NAME,
+    ID_CARD,
+    COMPANY_ID,
+    COMPANY_CODE,
+    BORROW_TYPE,
+    BORROW_STATE,
+    BORROW_AMOUNT,
+    CONTRACT_DATE,
+    LOAN_PERIOD,
+    REPAY_STATE,
+    ARREARS_AMOUNT,
+    REC_TIME
+  </sql>
+  <sql id= "TABLE_SEQ">
+    JD_DATA_ID_SEQUENCE.NEXTVAL
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    SELECT 
+    <include refid="Base_Column_List" />
+    FROM JD_DATA
+    WHERE ID = #{id,jdbcType=DECIMAL}
+  </select>
+  <select id= "selectList" resultMap ="BaseResultMap" parameterType= "java.util.Map" >
+		SELECT
+		<include refid ="Base_Column_List" />
+		 FROM ( SELECT t.*,rownum r FROM
+		( SELECT * FROM JD_DATA 
+			<if test ="condition != null">
+			WHERE ${condition}
+			</if >
+			<if test ="orderBy != null">
+					ORDER BY ${orderBy}
+			</if >
+		) t ) WHERE 1=1
+			<if test ="start != null">
+					AND r &gt; ${start}
+			</if >
+			<if test ="end != null">
+					AND r &lt;= ${end}
+			</if >
+	</select>
+  	<select id= "selectOne" resultMap ="BaseResultMap" parameterType= "java.util.Map" >
+		SELECT
+		<include refid ="Base_Column_List" />
+		  FROM JD_DATA  
+			<if test ="_parameter != null">
+			WHERE ${_parameter} AND rownum = 1
+			</if >
+	</select>
+    <select id= "selectCount" resultType ="java.lang.Long" parameterType= "java.lang.String" >
+		SELECT
+			COUNT(ID)
+		 FROM JD_DATA 
+		 <if test ="_parameter != null">
+			WHERE ${_parameter}
+		 </if >
+	</select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    DELETE FROM JD_DATA
+    WHERE ID = #{id,jdbcType=DECIMAL}
+  </delete>
+  <delete id="deleteByCondition" parameterType="java.lang.String" >
+    DELETE  FROM JD_DATA
+    WHERE ${_parameter}
+  </delete>
+  <insert id="insert" parameterType="com.xiaocui.platform.model.search.JdData" >
+    <selectKey keyProperty= "id" resultType ="java.lang.Long" order= "BEFORE">
+        SELECT <include refid ="TABLE_SEQ" /> FROM dual
+    </selectKey>
+    INSERT INTO JD_DATA (
+        ID,
+        REAL_NAME,
+        ID_CARD,
+        COMPANY_ID,
+        COMPANY_CODE,
+        BORROW_TYPE,
+        BORROW_STATE,
+        BORROW_AMOUNT,
+        CONTRACT_DATE,
+        LOAN_PERIOD,
+        REPAY_STATE,
+        ARREARS_AMOUNT,
+        REC_TIME
+      )
+    VALUES (
+        #{id,jdbcType=DECIMAL},
+        #{realName,jdbcType=VARCHAR},
+        #{idCard,jdbcType=VARCHAR},
+        #{companyId,jdbcType=DECIMAL},
+        #{companyCode,jdbcType=VARCHAR},
+        #{borrowType,jdbcType=SMALLINT},
+        #{borrowState,jdbcType=SMALLINT},
+        #{borrowAmount,jdbcType=SMALLINT},
+        #{contractDate,jdbcType=DECIMAL},
+        #{loanPeriod,jdbcType=SMALLINT},
+        #{repayState,jdbcType=SMALLINT},
+        #{arrearsAmount,jdbcType=DECIMAL},
+        #{recTime,jdbcType=DECIMAL}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.xiaocui.platform.model.search.JdData" >
+    <selectKey keyProperty= "id" resultType ="java.lang.Long" order= "BEFORE">
+        SELECT <include refid ="TABLE_SEQ" /> from dual
+    </selectKey>
+    INSERT INTO JD_DATA
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="realName != null" >
+        REAL_NAME,
+      </if>
+      <if test="idCard != null" >
+        ID_CARD,
+      </if>
+      <if test="companyId != null" >
+        COMPANY_ID,
+      </if>
+      <if test="companyCode != null" >
+        COMPANY_CODE,
+      </if>
+      <if test="borrowType != null" >
+        BORROW_TYPE,
+      </if>
+      <if test="borrowState != null" >
+        BORROW_STATE,
+      </if>
+      <if test="borrowAmount != null" >
+        BORROW_AMOUNT,
+      </if>
+      <if test="contractDate != null" >
+        CONTRACT_DATE,
+      </if>
+      <if test="loanPeriod != null" >
+        LOAN_PERIOD,
+      </if>
+      <if test="repayState != null" >
+        REPAY_STATE,
+      </if>
+      <if test="arrearsAmount != null" >
+        ARREARS_AMOUNT,
+      </if>
+      <if test="recTime != null" >
+        REC_TIME,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=DECIMAL},
+      </if>
+      <if test="realName != null" >
+        #{realName,jdbcType=VARCHAR},
+      </if>
+      <if test="idCard != null" >
+        #{idCard,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null" >
+        #{companyId,jdbcType=DECIMAL},
+      </if>
+      <if test="companyCode != null" >
+        #{companyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="borrowType != null" >
+        #{borrowType,jdbcType=SMALLINT},
+      </if>
+      <if test="borrowState != null" >
+        #{borrowState,jdbcType=SMALLINT},
+      </if>
+      <if test="borrowAmount != null" >
+        #{borrowAmount,jdbcType=SMALLINT},
+      </if>
+      <if test="contractDate != null" >
+        #{contractDate,jdbcType=DECIMAL},
+      </if>
+      <if test="loanPeriod != null" >
+        #{loanPeriod,jdbcType=SMALLINT},
+      </if>
+      <if test="repayState != null" >
+        #{repayState,jdbcType=SMALLINT},
+      </if>
+      <if test="arrearsAmount != null" >
+        #{arrearsAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="recTime != null" >
+        #{recTime,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xiaocui.platform.model.search.JdData" >
+    UPDATE JD_DATA
+    <set >
+      <if test="id != null" >
+        ID = #{id,jdbcType=DECIMAL},
+      </if>
+      <if test="realName != null" >
+        REAL_NAME = #{realName,jdbcType=VARCHAR},
+      </if>
+      <if test="idCard != null" >
+        ID_CARD = #{idCard,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null" >
+        COMPANY_ID = #{companyId,jdbcType=DECIMAL},
+      </if>
+      <if test="companyCode != null" >
+        COMPANY_CODE = #{companyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="borrowType != null" >
+        BORROW_TYPE = #{borrowType,jdbcType=SMALLINT},
+      </if>
+      <if test="borrowState != null" >
+        BORROW_STATE = #{borrowState,jdbcType=SMALLINT},
+      </if>
+      <if test="borrowAmount != null" >
+        BORROW_AMOUNT = #{borrowAmount,jdbcType=SMALLINT},
+      </if>
+      <if test="contractDate != null" >
+        CONTRACT_DATE = #{contractDate,jdbcType=DECIMAL},
+      </if>
+      <if test="loanPeriod != null" >
+        LOAN_PERIOD = #{loanPeriod,jdbcType=SMALLINT},
+      </if>
+      <if test="repayState != null" >
+        REPAY_STATE = #{repayState,jdbcType=SMALLINT},
+      </if>
+      <if test="arrearsAmount != null" >
+        ARREARS_AMOUNT = #{arrearsAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="recTime != null" >
+        REC_TIME = #{recTime,jdbcType=DECIMAL}
+      </if>
+    </set>
+    WHERE ID = #{id,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xiaocui.platform.model.search.JdData" >
+    UPDATE JD_DATA SET 
+      <if test="realName != null" >
+        REAL_NAME = #{realName,jdbcType=VARCHAR},
+      </if>
+      <if test="idCard != null" >
+        ID_CARD = #{idCard,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null" >
+        COMPANY_ID = #{companyId,jdbcType=DECIMAL},
+      </if>
+      <if test="companyCode != null" >
+        COMPANY_CODE = #{companyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="borrowType != null" >
+        BORROW_TYPE = #{borrowType,jdbcType=SMALLINT},
+      </if>
+      <if test="borrowState != null" >
+        BORROW_STATE = #{borrowState,jdbcType=SMALLINT},
+      </if>
+      <if test="borrowAmount != null" >
+        BORROW_AMOUNT = #{borrowAmount,jdbcType=SMALLINT},
+      </if>
+      <if test="contractDate != null" >
+        CONTRACT_DATE = #{contractDate,jdbcType=DECIMAL},
+      </if>
+      <if test="loanPeriod != null" >
+        LOAN_PERIOD = #{loanPeriod,jdbcType=SMALLINT},
+      </if>
+      <if test="repayState != null" >
+        REPAY_STATE = #{repayState,jdbcType=SMALLINT},
+      </if>
+      <if test="arrearsAmount != null" >
+        ARREARS_AMOUNT = #{arrearsAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="recTime != null" >
+        REC_TIME = #{recTime,jdbcType=DECIMAL}
+      </if>
+    WHERE ID = #{id,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByCondition"  parameterType="java.util.Map" >
+    UPDATE JD_DATA SET 
+       <if test="set != null">
+       	${set}
+       </if>
+    WHERE 
+		<if test="condition != null">
+			${condition}
+		</if>
+  </update>
+</mapper>

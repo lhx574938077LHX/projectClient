@@ -1,0 +1,256 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaocui.platform.dao.perm.NavTreeMapper" >
+  <resultMap id="BaseResultMap" type="com.xiaocui.platform.model.perm.NavTree" >
+    <id column="ID" property="id" jdbcType="DECIMAL" />
+    <result column="PID" property="pid" jdbcType="DECIMAL" />
+    <result column="OID" property="oid" jdbcType="VARCHAR" />
+    <result column="EXPANDED" property="expanded" jdbcType="DECIMAL" />
+    <result column="TEXT" property="text" jdbcType="VARCHAR" />
+    <result column="NODE_TYPE" property="nodeType" jdbcType="DECIMAL" />
+    <result column="ICONCLS" property="iconcls" jdbcType="VARCHAR" />
+    <result column="SORT" property="sort" jdbcType="DECIMAL" />
+    <result column="GUID" property="guid" jdbcType="VARCHAR" />
+    <result column="FUNC_VIEW_UUID" property="funcViewUuid" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID,
+    PID,
+    OID,
+    EXPANDED,
+    TEXT,
+    NODE_TYPE,
+    ICONCLS,
+    SORT,
+    GUID,
+    FUNC_VIEW_UUID
+  </sql>
+  <sql id= "TABLE_SEQ">
+    NAV_TREE_ID_SEQUENCE.NEXTVAL
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    SELECT 
+    <include refid="Base_Column_List" />
+    FROM NAV_TREE
+    WHERE ID = #{id,jdbcType=DECIMAL}
+  </select>
+  <select id= "selectList" resultMap ="BaseResultMap" parameterType= "java.util.Map" >
+		SELECT
+		<include refid ="Base_Column_List" />
+		 FROM ( SELECT t.*,rownum r FROM
+		( SELECT * FROM NAV_TREE 
+			<if test ="condition != null">
+			WHERE ${condition}
+			</if >
+			<if test ="orderBy != null">
+					ORDER BY ${orderBy}
+			</if >
+		) t ) WHERE 1=1
+			<if test ="start != null">
+					AND r &gt; ${start}
+			</if >
+			<if test ="end != null">
+					AND r &lt;= ${end}
+			</if >
+	</select>
+  	<select id= "selectOne" resultMap ="BaseResultMap" parameterType= "java.util.Map" >
+		SELECT
+		<include refid ="Base_Column_List" />
+		  FROM NAV_TREE  
+			<if test ="_parameter != null">
+			WHERE ${_parameter} AND rownum = 1
+			</if >
+	</select>
+    <select id= "selectCount" resultType ="java.lang.Long" parameterType= "java.lang.String" >
+		SELECT
+			COUNT(ID)
+		 FROM NAV_TREE 
+		 <if test ="_parameter != null">
+			WHERE ${_parameter}
+		 </if >
+	</select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    DELETE FROM NAV_TREE
+    WHERE ID = #{id,jdbcType=DECIMAL}
+  </delete>
+  <delete id="deleteByCondition" parameterType="java.lang.String" >
+    DELETE  FROM NAV_TREE
+    WHERE ${_parameter}
+  </delete>
+  <insert id="insert" parameterType="com.xiaocui.platform.model.perm.NavTree" >
+    <selectKey keyProperty= "id" resultType ="java.lang.Long" order= "BEFORE">
+        SELECT <include refid ="TABLE_SEQ" /> FROM dual
+    </selectKey>
+    INSERT INTO NAV_TREE (
+        ID,
+        PID,
+        OID,
+        EXPANDED,
+        TEXT,
+        NODE_TYPE,
+        ICONCLS,
+        SORT,
+        GUID,
+        FUNC_VIEW_UUID
+      )
+    VALUES (
+        #{id,jdbcType=DECIMAL},
+        #{pid,jdbcType=DECIMAL},
+        #{oid,jdbcType=VARCHAR},
+        #{expanded,jdbcType=DECIMAL},
+        #{text,jdbcType=VARCHAR},
+        #{nodeType,jdbcType=DECIMAL},
+        #{iconcls,jdbcType=VARCHAR},
+        #{sort,jdbcType=DECIMAL},
+        #{guid,jdbcType=VARCHAR},
+        #{funcViewUuid,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.xiaocui.platform.model.perm.NavTree" >
+    <selectKey keyProperty= "id" resultType ="java.lang.Long" order= "BEFORE">
+        SELECT <include refid ="TABLE_SEQ" /> from dual
+    </selectKey>
+    INSERT INTO NAV_TREE
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="pid != null" >
+        PID,
+      </if>
+      <if test="oid != null" >
+        OID,
+      </if>
+      <if test="expanded != null" >
+        EXPANDED,
+      </if>
+      <if test="text != null" >
+        TEXT,
+      </if>
+      <if test="nodeType != null" >
+        NODE_TYPE,
+      </if>
+      <if test="iconcls != null" >
+        ICONCLS,
+      </if>
+      <if test="sort != null" >
+        SORT,
+      </if>
+      <if test="guid != null" >
+        GUID,
+      </if>
+      <if test="funcViewUuid != null" >
+        FUNC_VIEW_UUID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=DECIMAL},
+      </if>
+      <if test="pid != null" >
+        #{pid,jdbcType=DECIMAL},
+      </if>
+      <if test="oid != null" >
+        #{oid,jdbcType=VARCHAR},
+      </if>
+      <if test="expanded != null" >
+        #{expanded,jdbcType=DECIMAL},
+      </if>
+      <if test="text != null" >
+        #{text,jdbcType=VARCHAR},
+      </if>
+      <if test="nodeType != null" >
+        #{nodeType,jdbcType=DECIMAL},
+      </if>
+      <if test="iconcls != null" >
+        #{iconcls,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null" >
+        #{sort,jdbcType=DECIMAL},
+      </if>
+      <if test="guid != null" >
+        #{guid,jdbcType=VARCHAR},
+      </if>
+      <if test="funcViewUuid != null" >
+        #{funcViewUuid,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xiaocui.platform.model.perm.NavTree" >
+    UPDATE NAV_TREE
+    <set >
+      <if test="id != null" >
+        ID = #{id,jdbcType=DECIMAL},
+      </if>
+      <if test="pid != null" >
+        PID = #{pid,jdbcType=DECIMAL},
+      </if>
+      <if test="oid != null" >
+        OID = #{oid,jdbcType=VARCHAR},
+      </if>
+      <if test="expanded != null" >
+        EXPANDED = #{expanded,jdbcType=DECIMAL},
+      </if>
+      <if test="text != null" >
+        TEXT = #{text,jdbcType=VARCHAR},
+      </if>
+      <if test="nodeType != null" >
+        NODE_TYPE = #{nodeType,jdbcType=DECIMAL},
+      </if>
+      <if test="iconcls != null" >
+        ICONCLS = #{iconcls,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null" >
+        SORT = #{sort,jdbcType=DECIMAL},
+      </if>
+      <if test="guid != null" >
+        GUID = #{guid,jdbcType=VARCHAR},
+      </if>
+      <if test="funcViewUuid != null" >
+        FUNC_VIEW_UUID = #{funcViewUuid,jdbcType=VARCHAR}
+      </if>
+    </set>
+    WHERE ID = #{id,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xiaocui.platform.model.perm.NavTree" >
+    UPDATE NAV_TREE SET 
+      <if test="pid != null" >
+        PID = #{pid,jdbcType=DECIMAL},
+      </if>
+      <if test="oid != null" >
+        OID = #{oid,jdbcType=VARCHAR},
+      </if>
+      <if test="expanded != null" >
+        EXPANDED = #{expanded,jdbcType=DECIMAL},
+      </if>
+      <if test="text != null" >
+        TEXT = #{text,jdbcType=VARCHAR},
+      </if>
+      <if test="nodeType != null" >
+        NODE_TYPE = #{nodeType,jdbcType=DECIMAL},
+      </if>
+      <if test="iconcls != null" >
+        ICONCLS = #{iconcls,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null" >
+        SORT = #{sort,jdbcType=DECIMAL},
+      </if>
+      <if test="guid != null" >
+        GUID = #{guid,jdbcType=VARCHAR},
+      </if>
+      <if test="funcViewUuid != null" >
+        FUNC_VIEW_UUID = #{funcViewUuid,jdbcType=VARCHAR}
+      </if>
+    WHERE ID = #{id,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByCondition"  parameterType="java.util.Map" >
+    UPDATE NAV_TREE SET 
+       <if test="set != null">
+       	${set}
+       </if>
+    WHERE 
+		<if test="condition != null">
+			${condition}
+		</if>
+  </update>
+</mapper>

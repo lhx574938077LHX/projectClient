@@ -1,0 +1,11 @@
+[
+    {
+       id:"yhzh",
+        text: "用户账号",
+        leaf: true
+    },{
+       id:"khrb",
+        text: "对接信息",
+        leaf: true
+    }
+]

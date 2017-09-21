@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema targetNamespace="http://www.shubinglin.com/tableentity" elementFormDefault="qualified" xmlns="http://www.shubinglin.com/tableentity" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:cst="http://www.codesmithtools.com/XmlPropertyExtensions">
+   <xs:element name="CommonEntity">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="Entity" type="Entity" minOccurs="1" maxOccurs="unbounded" />
+            </xs:sequence>
+            <xs:attribute name="Version" use="required" type="xs:string" /> <!-- 版本 -->
+            <xs:attribute name="DbName" use="required" type="xs:string" /> <!-- 数据库名 -->
+        </xs:complexType>
+    </xs:element>
+	<xs:complexType name="Entity" cst:description="Entity" cst:collectionName="MyEntities">
+		<xs:sequence>
+			<xs:element name="Property" type="Property" minOccurs="1" maxOccurs="unbounded" />
+		</xs:sequence>
+		<xs:attribute name="Name" use="required" type="xs:string" /> <!-- 数据表名 -->
+		<xs:attribute name="Namespace" use="required" type="xs:string" /> <!-- 命名空间 -->
+		<xs:attribute name="SubPackage" use="optional" type="xs:string" /> <!-- 子包 -->
+        <xs:attribute name="Type" use="optional" type="xs:string" /> <!-- 命名空间 -->
+        <xs:attribute name="NeedDel" use="optional" type="xs:boolean" /> <!-- 命名空间 -->
+		<xs:attribute name="SplitTable" use="optional" type="xs:boolean" default="false" /> <!-- 是否进行分表 -->
+		<xs:attribute name="MaxRow" use="optional" type="xs:integer" default="1000000" /> <!-- 单表数据最大值 -->
+	</xs:complexType>
+    <xs:complexType name="Property" cst:description="Name" cst:collectionName="MyProperties">
+        <xs:attribute name="Name" use="required" type="xs:string" /> <!-- 数据表列名 -->
+        <xs:attribute name="DbType" use="required" type="xs:string" /> <!-- 数据库数据类型 -->
+        <xs:attribute name="JavaType" use="required" type="xs:string" /> <!-- JAVA数据类型 -->
+        <xs:attribute name="JdbcType" use="required" type="xs:string" /> <!-- JDBC数据类型 -->
+        <xs:attribute name="Size" use="optional" type="xs:integer" /> <!-- 数据长度 -->
+        <xs:attribute name="Precision" use="optional" type="xs:integer" /> <!-- 整数位保留 -->
+        <xs:attribute name="Scale" use="optional" type="xs:integer" /> <!-- 小数位保留 -->
+        <xs:attribute name="DefaultValue" use="optional" type="xs:string" /> <!-- 字段默认值 -->
+        <xs:attribute name="AllowNull" use="optional" type="xs:boolean" default="true" /> <!-- 是否允许为空 -->
+        <xs:attribute name="Remark" use="optional" type="xs:string" /> <!-- 字段说明备注 -->
+        <xs:attribute name="PrimaryKey" use="optional" type="xs:boolean" default="false" /> <!-- 是否是主键 -->
+        <xs:attribute name="Identity" use="optional" type="xs:boolean" /> <!-- 是否是标识列 -->
+        <xs:attribute name="IdentityIncrement" use="optional" type="xs:integer" /> <!-- 标识增量 -->
+        <xs:attribute name="IdentitySeed" use="optional" type="xs:integer" /> <!-- 标识种子 -->
+    </xs:complexType>
+</xs:schema>

@@ -118,7 +118,7 @@ public class PkgHeader {
 	
 	public byte[] toPkgBytes(String charsetName)
 	{
-		byte[] result = toPkgBytes(Charset.forName(charsetName)); ;
+		byte[] result = toPkgBytes(Charset.forName(charsetName));
 		
 		return result;
 	}

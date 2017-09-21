@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CommonEntity Version="1.0" DbName="rrcdb" xmlns="http://www.shubinglin.com/tableentity">
+	
+	<Entity Name="JD_DATA" Namespace="com.xiaocui.platform" SubPackage="search" Type="TableEntity" NeedDel="false"><!--借贷数据-->
+		<Property Name="ID" DbType="NUMBER" JdbcType="DECIMAL" JavaType="java.lang.Long" AllowNull="false" Precision="12" Scale="0" PrimaryKey="true"
+			Identity="true" IdentityIncrement="1" IdentitySeed="1" Remark="标识列" />
+		<Property Name="REAL_NAME" DbType="VARCHAR2" JdbcType="VARCHAR" JavaType="java.lang.String" AllowNull="true" Size="60" Remark="姓名" />
+		<Property Name="ID_CARD" DbType="VARCHAR2" JdbcType="VARCHAR" JavaType="java.lang.String" AllowNull="true" Size="18" Remark="身份证号" />
+		<Property Name="COMPANY_ID" DbType="NUMBER" JdbcType="DECIMAL" JavaType="java.lang.Long" AllowNull="false" Precision="12" Scale="0" Remark="请求公司ID" />
+		<Property Name="COMPANY_CODE" DbType="VARCHAR2" JdbcType="VARCHAR" JavaType="java.lang.String" AllowNull="true" Size="17" Remark="公司编码" />
+		<Property Name="BORROW_TYPE" DbType="NUMBER" JdbcType="SMALLINT" JavaType="java.lang.Short" AllowNull="true" DefaultValue="" Precision="2" Scale="0"
+			Remark="借款类型 0.未知1.个人信贷2.个人抵押3.企业信贷4.企业抵押" />
+		<Property Name="BORROW_STATE" DbType="NUMBER" JdbcType="SMALLINT" JavaType="java.lang.Short" AllowNull="true" DefaultValue="" Precision="2" Scale="0"
+			Remark="借款状态 0.未知1.拒贷2.批贷已放款3.批贷未放款4.借款人放弃申请5.审核中6.待放款" />
+		<Property Name="BORROW_AMOUNT" DbType="NUMBER" JdbcType="SMALLINT" JavaType="java.lang.Short" AllowNull="true" DefaultValue="0" Precision="2" Scale="0"
+			Remark="借款金额 0.未知 1.[0,2], 2.[2,4], 3.[4,6], 4.[6,8] ........" />
+		<Property Name="CONTRACT_DATE" DbType="NUMBER" JdbcType="DECIMAL" JavaType="java.lang.Long" AllowNull="false" Precision="16" Scale="0" Remark="合同日期" />
+		<Property Name="LOAN_PERIOD" DbType="NUMBER" JdbcType="SMALLINT" JavaType="java.lang.Short" AllowNull="true" DefaultValue="0" Precision="2" Scale="0"
+			Remark="批贷期数" />
+		<Property Name="REPAY_STATE" DbType="NUMBER" JdbcType="SMALLINT" JavaType="java.lang.Short" AllowNull="true" DefaultValue="" Precision="2" Scale="0"
+			Remark="还款状态 0.未知1.正常2.M1 3.M2 4.M3 5.M4 6.M5 7.M6 8.M6+ 9.已还清" />
+		<Property Name="ARREARS_AMOUNT" DbType="NUMBER" JdbcType="DECIMAL" JavaType="java.lang.Long" AllowNull="false" Precision="19" Scale="0" Remark="欠款金额" />
+		<Property Name="REC_TIME" DbType="NUMBER" JdbcType="DECIMAL" JavaType="java.lang.Long" AllowNull="false" Precision="16" Scale="0" Remark="创建时间" />
+	</Entity>
+		
+	<Entity Name="SEARCH_LOG" Namespace="com.xiaocui.platform" SubPackage="search" Type="TableEntity" NeedDel="false"><!-- 查询记录表 -->
+		<Property Name="ID" DbType="NUMBER" JdbcType="DECIMAL" JavaType="java.lang.Long" AllowNull="false" Precision="12" Scale="0" PrimaryKey="true"
+			Identity="true" IdentityIncrement="1" IdentitySeed="1" Remark="标识列" />
+		<Property Name="SEARCH_TRX_NO" DbType="VARCHAR2" JdbcType="VARCHAR" JavaType="java.lang.String" AllowNull="true" Size="32" Remark="查询流水号" />
+		<Property Name="REAL_NAME" DbType="VARCHAR2" JdbcType="VARCHAR" JavaType="java.lang.String" AllowNull="true" Size="60" Remark="姓名" />
+		<Property Name="ID_CARD" DbType="VARCHAR2" JdbcType="VARCHAR" JavaType="java.lang.String" AllowNull="true" Size="18" Remark="身份证号" />
+		<Property Name="REQ_COMPANY_ID" DbType="NUMBER" JdbcType="DECIMAL" JavaType="java.lang.Long" AllowNull="false" Precision="12" Scale="0" Remark="请求公司ID" />
+		<Property Name="REQ_COMPANY_CODE" DbType="VARCHAR2" JdbcType="VARCHAR" JavaType="java.lang.String" AllowNull="true" Size="17" Remark="公司编码" />
+		<Property Name="STATE" DbType="NUMBER" JdbcType="SMALLINT" JavaType="java.lang.Short" AllowNull="true" DefaultValue="" Precision="2" Scale="0"
+			Remark="异步状态 0.未知1.待查询 2.查询中 3.待反馈结果 4.反馈次数上限 5.回调上报已完成6.非回调上报完成" />
+		<Property Name="SYNC_STATE" DbType="NUMBER" JdbcType="SMALLINT" JavaType="java.lang.Short" AllowNull="true" DefaultValue="" Precision="2" Scale="0"
+			Remark="同步状态 0.未知1.查询中 2.已完成3.需重复报送" />
+		<Property Name="SEARCH_TYPE" DbType="NUMBER" JdbcType="SMALLINT" JavaType="java.lang.Short" AllowNull="true" DefaultValue="" Precision="2" Scale="0"
+		Remark="查询类型 0.旧异步接口查询1.网站查询2.网站批量查询3.快速查询接口4.新异步接口查询" />
+		<Property Name="REC_TIME" DbType="NUMBER" JdbcType="DECIMAL" JavaType="java.lang.Long" AllowNull="false" Precision="16" Scale="0" Remark="创建时间" />
+		<Property Name="END_TIME" DbType="NUMBER" JdbcType="DECIMAL" JavaType="java.lang.Long" AllowNull="false" Precision="16" Scale="0" Remark="完成时间" />
+	</Entity>
+
+	<Entity Name="SEARCH_RESULT" Namespace="com.xiaocui.platform" SubPackage="search" Type="TableEntity" NeedDel="false"><!--查询结果表 -->
+		<Property Name="ID" DbType="NUMBER" JdbcType="DECIMAL" JavaType="java.lang.Long" AllowNull="false" Precision="12" Scale="0" PrimaryKey="true"
+			Identity="true" IdentityIncrement="1" IdentitySeed="1" Remark="标识列" />
+		<Property Name="SEARCH_LOG_ID" DbType="NUMBER" JdbcType="DECIMAL" JavaType="java.lang.Long" AllowNull="false" Precision="12" Scale="0" Remark="查询ID" />
+		<Property Name="SEARCH_TRX_NO" DbType="VARCHAR2" JdbcType="VARCHAR" JavaType="java.lang.String" AllowNull="true" Size="32" Remark="查询流水号" />
+		<Property Name="REQ_COMPANY_ID" DbType="NUMBER" JdbcType="DECIMAL" JavaType="java.lang.Long" AllowNull="false" Precision="12" Scale="0" Remark="请求公司ID" />
+		<Property Name="REQ_COMPANY_CODE" DbType="VARCHAR2" JdbcType="VARCHAR" JavaType="java.lang.String" AllowNull="true" Size="17" Remark="请求公司编码" />
+		<Property Name="RSP_COMPANY_ID" DbType="NUMBER" JdbcType="DECIMAL" JavaType="java.lang.Long" AllowNull="false" Precision="12" Scale="0" Remark="响应公司ID" />
+		<Property Name="RSP_COMPANY_CODE" DbType="VARCHAR2" JdbcType="VARCHAR" JavaType="java.lang.String" AllowNull="true" Size="17" Remark="响应公司编码" />
+		<Property Name="BORROW_TYPE" DbType="NUMBER" JdbcType="SMALLINT" JavaType="java.lang.Short" AllowNull="true" DefaultValue="" Precision="2" Scale="0"
+			Remark="借款类型 0.未知1.个人信贷2.个人抵押3.企业信贷4.企业抵押" />
+		<Property Name="BORROW_STATE" DbType="NUMBER" JdbcType="SMALLINT" JavaType="java.lang.Short" AllowNull="true" DefaultValue="" Precision="2" Scale="0"
+			Remark="借款状态 0.未知1.拒贷2.批贷已放款3.批贷未放款4.借款人放弃申请5.审核中6.待放款" />
+		<Property Name="BORROW_AMOUNT" DbType="NUMBER" JdbcType="SMALLINT" JavaType="java.lang.Short" AllowNull="true" DefaultValue="0" Precision="2" Scale="0"
+			Remark="借款金额 0.未知 1.[0,2], 2.[2,4], 3.[4,6], 4.[6,8] ........" />
+		<Property Name="CONTRACT_DATE" DbType="NUMBER" JdbcType="DECIMAL" JavaType="java.lang.Long" AllowNull="false" Precision="16" Scale="0" Remark="合同日期" />
+		<Property Name="LOAN_PERIOD" DbType="NUMBER" JdbcType="SMALLINT" JavaType="java.lang.Short" AllowNull="true" DefaultValue="0" Precision="2" Scale="0"
+			Remark="批贷期数" />
+		<Property Name="REPAY_STATE" DbType="NUMBER" JdbcType="SMALLINT" JavaType="java.lang.Short" AllowNull="true" DefaultValue="" Precision="2" Scale="0"
+			Remark="还款状态 0.未知1.正常2.M1 3.M2 4.M3 5.M4 6.M5 7.M6 8.M6+ 9.已还清" />
+		<Property Name="ARREARS_AMOUNT" DbType="NUMBER" JdbcType="DECIMAL" JavaType="java.lang.Long" AllowNull="false" Precision="19" Scale="0" Remark="欠款金额" />
+		<Property Name="REC_TIME" DbType="NUMBER" JdbcType="DECIMAL" JavaType="java.lang.Long" AllowNull="false" Precision="16" Scale="0" Remark="创建时间" />
+		<Property Name="RESULT_TYPE" DbType="NUMBER" JdbcType="SMALLINT" JavaType="java.lang.Short" AllowNull="true" DefaultValue="0" Precision="2" Scale="0"
+			Remark="记录类型 0.常规记录1.快速查询记录同步2.快速查询记录异步" />
+		<Property Name="DATA_TYPE" DbType="NUMBER" JdbcType="SMALLINT" JavaType="java.lang.Short" AllowNull="true" DefaultValue="0" Precision="2" Scale="0"
+			Remark="记录类型 0.常规记录1.JD_DATA2.SL_DATA" />
+	</Entity>
+
+	<Entity Name="SEARCH_COUNT" Namespace="com.xiaocui.platform" SubPackage="search" Type="TableEntity" NeedDel="false"><!--当日查询次数记录表 -->
+		<Property Name="ID" DbType="NUMBER" JdbcType="DECIMAL" JavaType="java.lang.Long" AllowNull="false" Precision="12" Scale="0" PrimaryKey="true"
+			Identity="true" IdentityIncrement="1" IdentitySeed="1" Remark="标识列" />
+		<Property Name="COMPANY_ID" DbType="NUMBER" JdbcType="DECIMAL" JavaType="java.lang.Long" AllowNull="false" Precision="12" Scale="0" Remark="公司ID" />
+		<Property Name="COMPANY_CODE" DbType="VARCHAR2" JdbcType="VARCHAR" JavaType="java.lang.String" AllowNull="true" Size="17" Remark="公司编码" />
+		<Property Name="SEARCH_COUNT" DbType="NUMBER" JdbcType="DECIMAL" JavaType="java.lang.Integer" AllowNull="true" Precision="6" Scale="0" Remark="查询总数" />
+		<Property Name="REC_TIME" DbType="NUMBER" JdbcType="DECIMAL" JavaType="java.lang.Long" AllowNull="false" Precision="16" Scale="0" Remark="创建时间" />
+	</Entity>
+	
+	<Entity Name="COMPANY_INFO" Namespace="com.xiaocui.platform" SubPackage="search" Type="TableEntity" NeedDel="false"><!--公司信息表 -->
+		<Property Name="ID" DbType="NUMBER" JdbcType="DECIMAL" JavaType="java.lang.Long" AllowNull="false" Precision="12" Scale="0" PrimaryKey="true"
+			Identity="true" IdentityIncrement="1" IdentitySeed="1" Remark="标识列" />
+		<Property Name="CONN_SIGN" DbType="VARCHAR2" JdbcType="VARCHAR" JavaType="java.lang.String" AllowNull="true" Size="32" Remark="通信签名" />
+		<Property Name="COMPANY_NAME" DbType="VARCHAR2" JdbcType="VARCHAR" JavaType="java.lang.String" AllowNull="true" Size="100" Remark="公司名" />
+		<Property Name="COMPANY_CODE" DbType="VARCHAR2" JdbcType="VARCHAR" JavaType="java.lang.String" AllowNull="true" Size="17" Remark="公司编码" />
+		<Property Name="INTEGRAL" DbType="NUMBER" JdbcType="DECIMAL" JavaType="java.lang.Long" AllowNull="false" Precision="19" Scale="0" Remark="积分" />
+		<Property Name="STATE" DbType="NUMBER" JdbcType="SMALLINT" JavaType="java.lang.Short" AllowNull="true" DefaultValue="" Precision="2" Scale="0"
+			Remark="当前状态 0.未知1.待审批 2.未通过审核 3.已开通 4.已停用" />
+		<Property Name="SERVICE_URL" DbType="VARCHAR2" JdbcType="VARCHAR" JavaType="java.lang.String" AllowNull="true" Size="256" Remark="服务地址" />
+		<Property Name="P00001" DbType="NUMBER" JdbcType="SMALLINT" JavaType="java.lang.Short" AllowNull="true" DefaultValue="" Precision="2" Scale="0"
+			Remark="3001被查 当前状态 0.未开通1.已开通" />
+		<Property Name="P00002" DbType="NUMBER" JdbcType="SMALLINT" JavaType="java.lang.Short" AllowNull="true" DefaultValue="" Precision="2" Scale="0"
+			Remark="3002报送 当前状态 0.未开通1.已开通" />
+		<Property Name="P00003" DbType="NUMBER" JdbcType="SMALLINT" JavaType="java.lang.Short" AllowNull="true" DefaultValue="" Precision="2" Scale="0"
+			Remark="加密方式 0.未开通1.签名通信2.RSA加密" />
+		<Property Name="P00004" DbType="NUMBER" JdbcType="SMALLINT" JavaType="java.lang.Short" AllowNull="true" DefaultValue="" Precision="2" Scale="0"
+			Remark="1003功能 0.未开通1.已开通" />
+		<Property Name="REC_TIME" DbType="NUMBER" JdbcType="DECIMAL" JavaType="java.lang.Long" AllowNull="false" Precision="16" Scale="0" Remark="创建时间" />
+		<Property Name="SOURCE_TYPE" DbType="NUMBER" JdbcType="SMALLINT" JavaType="java.lang.Short" AllowNull="true" DefaultValue="" Precision="2" Scale="0" Remark="数据源类型 0.公开1.私有" />
+		<Property Name="EXCLUDED" DbType="VARCHAR2" JdbcType="VARCHAR" JavaType="java.lang.String" AllowNull="true" Size="1024"
+			Remark="要排除的公司CODE 用|号分割" />
+		<Property Name="BIND_IP" DbType="VARCHAR2" JdbcType="VARCHAR" JavaType="java.lang.String" AllowNull="true" Size="2048" 
+			Remark="绑定IP 用|号分割" />
+		<Property Name="INTEGRAL_OVERDRAFT" DbType="NUMBER" JdbcType="DECIMAL" JavaType="java.lang.Long" AllowNull="true" DefaultValue="0" Precision="19" Scale="0"
+			Remark="积分透支额度" />
+		<Property Name="START_CHARGING_TIME" DbType="NUMBER" JdbcType="DECIMAL" JavaType="java.lang.Long" AllowNull="true" DefaultValue="" Precision="16" Scale="0"
+			Remark="开始计费时间" />
+		<Property Name="P00005" DbType="NUMBER" JdbcType="SMALLINT" JavaType="java.lang.Short" AllowNull="true" DefaultValue="0" Precision="2" Scale="0"
+			Remark="黑名单产品功能 0.未开通1.已开通" />
+		<Property Name="P00005_PARAM" DbType="NUMBER" JdbcType="SMALLINT" JavaType="java.lang.Short" AllowNull="true" DefaultValue="0" Precision="2" Scale="0"
+			Remark="黑名单产品版本0.简版1.【明细版1】 显示最新的催收记录2.【明细版2】显示逾期最高的催收记录3.【明细版3】显示所有的记录" />
+	</Entity>
+	
+	<Entity Name="JOIN_CONDITION" Namespace="com.xiaocui.platform" SubPackage="search" Type="TableEntity" NeedDel="false"><!--对接状况表 -->	
+		<Property Name="ID" DbType="NUMBER" JdbcType="DECIMAL" JavaType="java.lang.Long" AllowNull="false" Precision="12" Scale="0" PrimaryKey="true"
+			Identity="true" IdentityIncrement="1" IdentitySeed="1" Remark="标识列" />
+		<Property Name="COMPANY_ID" DbType="NUMBER" JdbcType="DECIMAL" JavaType="java.lang.Long" AllowNull="false" Precision="12" Scale="0" Remark="请求公司ID" />
+		<Property Name="START_TIME" DbType="NUMBER" JdbcType="DECIMAL" JavaType="java.lang.Long" AllowNull="true" Precision="16" Scale="0" Remark="开始时间" />
+		<Property Name="END_TIME" DbType="NUMBER" JdbcType="DECIMAL" JavaType="java.lang.Long" AllowNull="true" Precision="16" Scale="0" Remark="结束时间" />
+		<Property Name="JOIN_STATE" DbType="NUMBER" JdbcType="SMALLINT" JavaType="java.lang.Short" AllowNull="true" DefaultValue="" Precision="2" Scale="0"
+			Remark="对接状态 0.建群发文1.等待开发2.对接联调3.等待上线4.系统上线5.放弃跟进" />		
+		<Property Name="TIME_INFORMATION" DbType="VARCHAR2" JdbcType="VARCHAR" JavaType="java.lang.String" AllowNull="true" Size="500" Remark="实时信息" />		
+		<Property Name="REMARK" DbType="VARCHAR2" JdbcType="VARCHAR" JavaType="java.lang.String" AllowNull="true" Size="500" Remark="备注" />
+		<Property Name="BD_NAME" DbType="VARCHAR2" JdbcType="VARCHAR" JavaType="java.lang.String" AllowNull="true" Size="100" Remark="客户经理" />	
+		<Property Name="CLIENT_EMAIL" DbType="VARCHAR2" JdbcType="VARCHAR" JavaType="java.lang.String" AllowNull="true" Size="100" Remark="客户邮箱" />	
+		<Property Name="UPDATE_TIME" DbType="NUMBER" JdbcType="DECIMAL" JavaType="java.lang.Long" AllowNull="true" Precision="16" Scale="0" Remark="最近更新时间" />
+		<Property Name="IS_P3001" DbType="NUMBER" JdbcType="SMALLINT" JavaType="java.lang.Short" AllowNull="true" DefaultValue="" Precision="2" Scale="0"
+			Remark="是否开放被查询 0.不开放1.开放" />		
+		<Property Name="REC_TIME" DbType="NUMBER" JdbcType="DECIMAL" JavaType="java.lang.Long" AllowNull="false" Precision="16" Scale="0" Remark="创建时间" />		
+	</Entity>
+	
+	<!--测试存放数据表 -->
+	<Entity Name="TEST_DATA_RESULT" Namespace="com.xiaocui.platform" SubPackage="search" Type="TableEntity" NeedDel="false">	
+		<Property Name="ID" DbType="NUMBER" JdbcType="DECIMAL" JavaType="java.lang.Long" AllowNull="false" Precision="12" Scale="0" PrimaryKey="true" Identity="true" IdentityIncrement="1" IdentitySeed="1" Remark="标识列"/>
+		<Property Name="TRX_NO" DbType="VARCHAR2" JdbcType="VARCHAR" JavaType="java.lang.String" AllowNull="false" DefaultValue="" Size="50" Remark="查询编码"/>
+		<Property Name="REAL_NAME" DbType="VARCHAR2" JdbcType="VARCHAR" JavaType="java.lang.String" AllowNull="false" DefaultValue="" Size="50" Remark="用户姓名"/>
+		<Property Name="IDCARD" DbType="VARCHAR2" JdbcType="VARCHAR" JavaType="java.lang.String" AllowNull="false" DefaultValue="" Size="50" Remark="身份证号"/>	
+		<Property Name="COMPANY_CODE" DbType="VARCHAR2" JdbcType="VARCHAR" JavaType="java.lang.String" AllowNull="true" DefaultValue="" Size="50" Remark="公司编码"/>
+		<Property Name="BORROWT_YPE" DbType="NUMBER" JdbcType="SMALLINT" JavaType="java.lang.Short" AllowNull="true" DefaultValue="0" Precision="2"  Scale="0" Remark="借款类型 0.未知1.个人信贷2.个人抵押3.企业信贷4.企业抵押"/>	
+		<Property Name="BORROW_STATE" DbType="NUMBER" JdbcType="SMALLINT" JavaType="java.lang.Short" AllowNull="true" DefaultValue="0" Precision="2"  Scale="0" Remark="借款状态 0.未知1.拒贷2.批贷已放款3.批贷未放款4.借款人放弃申请5.审核中6.待放款"/>	
+		<Property Name="BORROW_AMOUNT" DbType="NUMBER" JdbcType="SMALLINT" JavaType="java.lang.Short" AllowNull="true" DefaultValue="0" Precision="2"  Scale="0" Remark="借款金额 -7.[0,0.1) -6.[0.1,0.2) -5.[0.2,0.3) -4.[0.3,0.4) -3.[0.4,0.6) -2.[0.6,0.8) -1.[0.8,1) 1.[1,2) 2.[2,4) 3.[4,6) 4.[6,8)……."/>	
+		<Property Name="CONTRACT_DATE" DbType="NUMBER" JdbcType="DECIMAL" JavaType="java.lang.Long" AllowNull="true" Precision="16" Scale="0" Remark="合同日期"/>	
+		<Property Name="LOAN_PERIOD" DbType="NUMBER" JdbcType="SMALLINT" JavaType="java.lang.Short" AllowNull="true" DefaultValue="0" Precision="2"  Scale="0" Remark="批贷期数"/>	
+		<Property Name="REPAY_STATE" DbType="NUMBER" JdbcType="SMALLINT" JavaType="java.lang.Short" AllowNull="true" DefaultValue="0" Precision="2"  Scale="0" Remark="还款状态 0.未知1.正常2.M1 3.M2 4.M3 5.M4 6.M5 7.M6 8.M6+"/>	
+		<Property Name="ARREARS_AMOUNT" DbType="NUMBER" JdbcType="DECIMAL" JavaType="java.lang.Long" AllowNull="true" Precision="19" Scale="0" Remark="欠款金额"/>
+		<Property Name="REC_TIME" DbType="NUMBER" JdbcType="DECIMAL" JavaType="java.lang.Long" AllowNull="false" Precision="16" Scale="0" Remark="记录创建时间"/>		
+	</Entity>
+	<!-- 账号表 -->	
+	<Entity Name="EMP_ACCTOUNT" Namespace="com.xiaocui.platform" SubPackage="common" Type="TableEntity" NeedDel="false">	
+		<Property Name="ID" DbType="NUMBER" JdbcType="DECIMAL" JavaType="java.lang.Long" AllowNull="false" Precision="12" Scale="0" PrimaryKey="true" Identity="true" IdentityIncrement="1" IdentitySeed="1" Remark="标识列"/>		
+		<Property Name="USERNAME" DbType="VARCHAR2" JdbcType="VARCHAR" JavaType="java.lang.String" AllowNull="false" Size="50" Remark="登陆名"/>		
+		<Property Name="PASSWORD" DbType="VARCHAR2" JdbcType="VARCHAR" JavaType="java.lang.String" AllowNull="false" Size="50" Remark="登陆密码"/>
+		<Property Name="AUTH_TPL_ID" DbType="NUMBER" JdbcType="DECIMAL" JavaType="java.lang.Long" AllowNull="false" DefaultValue="0" Precision="12" Scale="0" Remark="权限模板表ID"/>		
+		<Property Name="STATE" DbType="NUMBER" JdbcType="DECIMAL" JavaType="java.lang.Short" AllowNull="false" Precision="1" Scale="0" DefaultValue="1" Remark="用户状态:1.已启用 2.已销户"/>
+		<Property Name="LAST_LOGIN_TIME" DbType="NUMBER" JdbcType="DECIMAL" JavaType="java.lang.Long" AllowNull="true" Precision="16" Scale="0" Remark="最后一次登陆时间"/>
+		<Property Name="REAL_NAME" DbType="VARCHAR2" JdbcType="VARCHAR" JavaType="java.lang.String" AllowNull="true" Size="45" Remark="真实姓名"/>	
+		<Property Name="TELEPHONE" DbType="VARCHAR2" JdbcType="VARCHAR" JavaType="java.lang.String" AllowNull="true" Size="45" Remark="电话号码"/>		
+		<Property Name="REC_TIME" DbType="NUMBER" JdbcType="DECIMAL" JavaType="java.lang.Long" AllowNull="false" Precision="16" Scale="0" Remark="记录创建时间"/>
+	</Entity>	
+	<!-- 视图表 -->
+	<Entity Name="FUNC_VIEW" Namespace="com.xiaocui.platform" SubPackage="perm" Type="TableEntity" NeedDel="false">
+		<Property Name="ID" DbType="NUMBER" JdbcType="DECIMAL" JavaType="java.lang.Long" AllowNull="false" Precision="12" Scale="0" PrimaryKey="true" Identity="true" IdentityIncrement="1" IdentitySeed="1" Remark="标识列"/>
+		<Property Name="UUID" DbType="VARCHAR2" JdbcType="VARCHAR" JavaType="java.lang.String" AllowNull="false" Size="32" Remark="UUID"/>
+		<Property Name="NAME" DbType="VARCHAR2" JdbcType="VARCHAR" JavaType="java.lang.String" AllowNull="false" Size="20" Remark="名称"/>
+		<Property Name="REMARK" DbType="VARCHAR2" JdbcType="VARCHAR" JavaType="java.lang.String" AllowNull="true" DefaultValue="" Size="100" Remark="备注"/>
+		<Property Name="CODE" DbType="VARCHAR2" JdbcType="VARCHAR" JavaType="java.lang.String" AllowNull="false" Size="32" Remark="视图面板的类名"/>
+	</Entity>
+	
+	<!-- 权限模板 -->
+	<Entity Name="AUTH_TEMPLATE" Namespace="com.xiaocui.platform" SubPackage="perm" Type="TableEntity" NeedDel="false">
+		<Property Name="ID" DbType="NUMBER" JdbcType="DECIMAL" JavaType="java.lang.Long" AllowNull="false" Precision="12" Scale="0" PrimaryKey="true" Identity="true" IdentityIncrement="1" IdentitySeed="1" Remark="标识列"/>
+		<Property Name="NAME" DbType="VARCHAR2" JdbcType="VARCHAR" JavaType="java.lang.String" AllowNull="true" DefaultValue="" Size="20" Remark="名称"/>
+		<Property Name="REMARK" DbType="VARCHAR2" JdbcType="VARCHAR" JavaType="java.lang.String" AllowNull="true" DefaultValue="" Size="100" Remark="备注"/>
+	</Entity>
+	<!-- 权限表 -->
+	<Entity Name="AUTHORITY" Namespace="com.xiaocui.platform" SubPackage="perm" Type="TableEntity" NeedDel="false">
+		<Property Name="ID" DbType="NUMBER" JdbcType="DECIMAL" JavaType="java.lang.Long" AllowNull="false" Precision="12" Scale="0" PrimaryKey="true" Identity="true" IdentityIncrement="1" IdentitySeed="1" Remark="标识列"/>
+		<Property Name="AUTH_TPL_ID" DbType="NUMBER" JdbcType="DECIMAL" JavaType="java.lang.Long" AllowNull="true" DefaultValue="0" Precision="12" Scale="0" Remark="权限模板表ID"/>
+		<Property Name="CODE" DbType="VARCHAR2" JdbcType="VARCHAR" JavaType="java.lang.String" AllowNull="false" Size="32" Remark="权限条件UUID"/>
+		<!--
+			TYPE 1,2,6时FILTER_ID 为0
+		-->
+		<Property Name="FILTER_ID" DbType="NUMBER" JdbcType="DECIMAL" JavaType="java.lang.Long" AllowNull="true" DefaultValue="0" Precision="2" Scale="0"  Remark="权限过滤条件ID"/>
+		<Property Name="TYPE" DbType="NUMBER" JdbcType="DECIMAL" JavaType="java.lang.Long" AllowNull="false" Precision="2" Scale="0" Remark="类型 1.叶子节点 2.Action 3帮助"/>
+	</Entity>
+	<!-- 导航树 -->
+	<Entity Name="NAV_TREE" Namespace="com.xiaocui.platform" SubPackage="perm" Type="TableEntity" NeedDel="false">
+		<Property Name="ID" DbType="NUMBER" JdbcType="DECIMAL" JavaType="java.lang.Long" AllowNull="false" Precision="12" Scale="0" PrimaryKey="true" Identity="true" IdentityIncrement="1" IdentitySeed="1" Remark="标识列"/>
+		<Property Name="PID" DbType="NUMBER" JdbcType="DECIMAL" JavaType="java.lang.Long" AllowNull="true" Precision="12" Scale="0" Remark="父ID"/>
+		<Property Name="OID" DbType="VARCHAR2" JdbcType="VARCHAR" JavaType="java.lang.String" AllowNull="true" Size="22" DefaultValue="" Remark="标签ID"/>
+		<Property Name="EXPANDED" DbType="NUMBER" JdbcType="DECIMAL" JavaType="java.lang.Short" AllowNull="true" Precision="1" Scale="0" Remark="是否展开0.false 1.true"/>
+		<Property Name="TEXT" DbType="VARCHAR2" JdbcType="VARCHAR" JavaType="java.lang.String" AllowNull="true" Size="66" DefaultValue="" Remark="标签名"/>
+		<Property Name="NODE_TYPE" DbType="NUMBER" JdbcType="DECIMAL" JavaType="java.lang.Short" AllowNull="true" Precision="1" Scale="0" DefaultValue="" Remark="节点类型：0.导航Tab.1导航折叠2.导航树形3.树形节点"/>
+		<Property Name="ICONCLS" DbType="VARCHAR2" JdbcType="VARCHAR" JavaType="java.lang.String" AllowNull="true" Size="100" DefaultValue="" Remark="图标css"/>
+		<Property Name="SORT" DbType="NUMBER" JdbcType="DECIMAL" JavaType="java.lang.Long" AllowNull="true" Precision="3" Scale="0" DefaultValue="" Remark="排序字段"/>
+		<Property Name="GUID" DbType="VARCHAR2" JdbcType="VARCHAR" JavaType="java.lang.String" AllowNull="false" Size="32" Remark="导航节点"/>
+		<Property Name="FUNC_VIEW_UUID" DbType="VARCHAR2" JdbcType="VARCHAR" JavaType="java.lang.String" AllowNull="true" DefaultValue="" Size="32" Remark="功能视图UUID"/>
+	</Entity>	
+</CommonEntity>
+	
+	
+	
+
+	
+	
+	
+	
+	

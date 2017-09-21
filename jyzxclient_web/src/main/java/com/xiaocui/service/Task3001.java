@@ -1,20 +1,53 @@
 package com.xiaocui.service;
 
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.codec.binary.Base64;
+import org.apache.log4j.Logger;
+import org.apache.log4j.chainsaw.Main;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.xiaocui.common.BASE64Encoder;
 import com.xiaocui.common.JsonSerializer;
 import com.xiaocui.entity.LoanInfo;
 import com.xiaocui.entity.Pkg3001;
 import com.xiaocui.entity.Pkg4001;
 import com.xiaocui.entity.PkgHeader;
+import com.xiaocui.platform.dao.data.JyzxJdxxcxfkMapper;
+import com.xiaocui.platform.dao.data.JyzxJdxxcxqqMapper;
+import com.xiaocui.platform.dao.data.JyzxJdxxgxjkMapper;
+import com.xiaocui.platform.model.data.JyzxJdxxgxjk;
+import com.xiaocui.settings.SystemSetting;
 
 @Service("task3001")
 public class Task3001 implements ITask {
+	
+	private final static Logger logger = Logger.getLogger(Task3001.class);
+	
+	@Autowired
+	private SystemSetting systemSetting;
+	
+	@Autowired
+	JyzxJdxxcxfkMapper jyzxJdxxcxfkMapper;
 
+	@Autowired
+	JyzxJdxxcxqqMapper jyzxJdxxcxqqMapper;	
+	
+	@Autowired
+	JyzxJdxxgxjkMapper jyzxJdxxgxjkMapper;
+	
+	
+	
 	@Override
 	public PkgHeader doTask(PkgHeader reqPkg,PkgHeader rspPkg) {
 		Pkg4001 pkg4001 = new Pkg4001();	
@@ -26,21 +59,22 @@ public class Task3001 implements ITask {
 			String idCard = pkg3001.getIdCard();	//被查询人的身份证号
 			
 			List<LoanInfo> loanInfos = new ArrayList<LoanInfo>();
-			/*
-			 * TODO: 此处从数据库中查询到数据添加到loanInfos结果集中
-			 */
-			
-			
-			
+			LoanInfo loanInfo = new LoanInfo();
+			loanInfo.setBorrowType((short) 1);
+			loanInfo.setBorrowState((short) 2);
+			loanInfo.setBorrowAmount((short) 3);
+			loanInfo.setContractDate(new Date(1442035016251L));
+			loanInfo.setLoanPeriod((short) 9);
+			loanInfo.setRepayState((short) 8);
+			loanInfo.setArrearsAmount((long) 0);
+			loanInfo.setCompanyCode(companyCode);
+
 			pkg4001.setLoanInfos(loanInfos);
 			
 			//正常情况
 			rspPkg.setRetCode("0000");
 			rspPkg.setRetMsg("查询成功");
-			
-//			异常情况
-//			rspPkg.setRetCode("9999");
-//			rspPkg.setRetMsg("查询失败");
+//			rspPkg.setSign("5A59392B2F3C0F13F56CBBCFCCFFF25B");
 		} 
 		catch (Exception e) {
 			e.printStackTrace();
@@ -52,10 +86,18 @@ public class Task3001 implements ITask {
 		
 		String msgBodyJson = JsonSerializer.serializer(pkg4001);
 		rspPkg.setMsgBody(msgBodyJson);
-		
 		return rspPkg;
 	}
 	
-
+	
+	public static void main(String[] args) throws UnsupportedEncodingException {
+		String str = "{\"loanInfos\":[{\"borrowType\":0,\"borrowState\":0,\"borrowAmount\":0,\"contractDate\":0,\"loanPeriod\":0,\"repayState\":0,\"arrearsAmount\":0}]}";
+		String retMsg1 = Base64.encodeBase64String(str.getBytes("UTF-8"));
+		
+		String retMsg = new BASE64Encoder().encode(str.getBytes("UTF-8"));
+		System.out.println(retMsg);
+		System.out.println(retMsg1);
+	}
+	
 }
 

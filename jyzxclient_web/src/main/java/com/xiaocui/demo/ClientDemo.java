@@ -26,16 +26,19 @@ import com.xiaocui.entity.Pkg2001;
 import com.xiaocui.entity.PkgHeader;
 
 public class ClientDemo {
-	private static final String companyCode = "P2PV7DH0000100005";	//请以配置文件形式或储存到数据库形式保存获取
+//	private static final String companyCode = "P2P4HJK0000101101";	//请以配置文件形式或储存到数据库形式保存获取
+	
+//	private static final String companyCode = "P2P43DE80NRMNACFZ";	//请以配置文件形式或储存到数据库形式保存获取
+	
+	private static final String companyCode = "P2P4HJK0000100031";	//请以配置文件形式或储存到数据库形式保存获取
 	
 	public static void main(String[] args) {
 		Pkg1001 pkg1001 = new Pkg1001();
-		pkg1001.setIdCard("32020219790403401X");
-		pkg1001.setRealName("吴慕恩");
-		
-		
+		pkg1001.setIdCard("362301196603132058");
+		pkg1001.setRealName("姚桂明");
+		System.out.println(System.currentTimeMillis());
 		String msgBody = JsonSerializer.serializer(pkg1001);
-		
+			
 		PkgHeader reqPkg = new PkgHeader();
 		PkgHeader rspPkg = new PkgHeader();
 		reqPkg.setVersion("01");			//默认01
@@ -45,10 +48,22 @@ public class ClientDemo {
 		reqPkg.setEncryptType("01");	//加密类型 01.不加密 02.RSA
 		reqPkg.setMsgType("01");			//01.JSON 02.XML 03.Protobuf
 		reqPkg.setMsgBody(msgBody);			//报文主体
+		reqPkg.setSign("56cbbcfccfff25b5a59392b2f3c0f13f");
+//		reqPkg.setSign("42c036b481339f2ef80504a020be1805");
 		
-		String url = "http://114.113.101.218/jyzx/zxservice.do";	//数据服务地址
+		String pkgStr = reqPkg.toPkgStr();
+		PkgHeader pkgHeader = new PkgHeader();
+		pkgHeader.parseFromString(pkgStr);
+		
+		
+//		String url = "http://210.72.229.172:8181/jyzx/zxservice.do";	//数据服务地址
+//		String url = "http://s8.91zhengxin.com/jyzx/zxservice.do";	//数据服务地址
+		String url = "http://localhost:9080/jyzx/zxservice.do";	//数据服务地址
 		CloseableHttpClient httpclient = createSSLClientDefault();
 		HttpPost post = new HttpPost(url);
+		System.out.println("-----------------------");
+		System.out.println(reqPkg.toPkgStr());   //输出请求报文
+		System.out.println("-----------------------");
 		ByteArrayEntity reqEntity = new ByteArrayEntity(reqPkg.toPkgBytes("UTF-8"));
 		post.setEntity(reqEntity);
 		
@@ -68,6 +83,7 @@ public class ClientDemo {
 		    
 		    if(rspPkg.getRetCode().equals("0000"))
 		    {
+				System.out.println(System.currentTimeMillis());
 			    System.out.println("响应消息:" + rspPkg.getRetMsg());
 			    Pkg2001 pkg2001 = (Pkg2001) JsonSerializer.deserializer(rspPkg.getMsgBody(),new TypeReference<Pkg2001>(){});
 			    System.out.println("查询交易代码:" + pkg2001.getTrxNo());
@@ -82,7 +98,8 @@ public class ClientDemo {
 			e.printStackTrace();
 		}
 	}
-
+	
+	
 	private  static CloseableHttpClient createSSLClientDefault(){
 		try {
 			 SSLContext sslContext = new SSLContextBuilder().loadTrustMaterial(null, new TrustStrategy() {

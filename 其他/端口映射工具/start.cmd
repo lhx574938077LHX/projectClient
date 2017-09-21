@@ -1,0 +1,3 @@
+@echo off
+ngrok authtoken 6Z3QGzqnRx89igXbnVXrP_4ot3rhQKZKyjfkqk79aax
+ngrok http 8080

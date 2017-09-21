@@ -1,0 +1,12 @@
+﻿[
+    {
+       id:"ptjj",
+        text: "平台简介",
+        leaf: true
+    },
+    {
+       id:"tdjs",
+        text: "团队介绍",
+        leaf: true
+    }
+]

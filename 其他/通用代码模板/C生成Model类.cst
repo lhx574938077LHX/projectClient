@@ -1,0 +1,142 @@
+﻿<%@ CodeTemplate Language="C#" TargetLanguage="Java" Description="3.生成Model类" %>
+<%@ XmlProperty Name="CommonEntity" Schema="CommonEntity.xsd" Optional="True"  Default="TableEntity.xml" Description="实体类对象XML描述文档" %>
+<%@ Property Name="EntityName" Type="System.String" Optional="True" Category="Context" Description="实体类名" %>
+<%@ Map Name="ORACLEJAVAMap" Src="Oracle-Java.csmap" Default="__UNKNOWTYPE__" Description="Oracle数据类型对应C#数据类型映射表" %>
+
+<%@ Assembly Src="Common.cs" %>
+<%@ Import Namespace="Com.IceFox.Utils" %>
+
+<%
+    foreach(Entity entity in CommonEntity.Entities)
+    {
+        if(entity.Name == EntityName)
+        {
+%>
+package <%=entity.Namespace%>.model<%=String.IsNullOrEmpty(entity.SubPackage)?"":"." + entity.SubPackage%>;
+
+public class <%=Common.ConvertOTJ(entity.Name)%> {
+    
+    <%
+        for(int i=0;i<entity.Properties.Count;i++){
+    %>
+    //<%=entity.Properties[i].Remark%>
+    private <%=entity.Properties[i].JavaType%> <%=Common.InitialToLower(Common.ConvertOTJ(entity.Properties[i].Name),false)%>;
+    
+    <%
+        }
+    %>
+    
+    <%
+        for(int i=0;i<entity.Properties.Count;i++){
+    %>
+    /**
+	 * @description 功能描述：获取<%=Common.ConvertOTJ(entity.Properties[i].Remark)%>
+	 * @createdate 创建日期 <%=DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")%>
+	 * @return 返回参数： <%=entity.Properties[i].JavaType%>
+	 */
+    public <%=entity.Properties[i].JavaType%> get<%=Common.ConvertOTJ(entity.Properties[i].Name)%>() {
+        return <%=Common.InitialToLower(Common.ConvertOTJ(entity.Properties[i].Name),false)%>;
+    }
+
+    /**
+	 * @description 功能描述：设置<%=Common.ConvertOTJ(entity.Properties[i].Remark)%>
+	 * @createdate 创建日期 <%=DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")%>
+	 * @params 传入参数：@param <%=Common.InitialToLower(Common.ConvertOTJ(entity.Properties[i].Name),false)%>
+	 * @return 返回参数： void
+	 */
+    public void set<%=Common.ConvertOTJ(entity.Properties[i].Name)%>(<%=entity.Properties[i].JavaType%> <%=Common.InitialToLower(Common.ConvertOTJ(entity.Properties[i].Name),false)%>) {
+        this.<%=Common.InitialToLower(Common.ConvertOTJ(entity.Properties[i].Name),false)%> = <%=Common.InitialToLower(Common.ConvertOTJ(entity.Properties[i].Name),false)%>;
+    }
+    
+    <%
+        }
+    %>
+    
+    public <%=Common.ConvertOTJ(entity.Name)%>()
+    {
+    }
+}
+<%
+        }
+    }
+%>
+
+<script runat="template">
+    /// <summary>
+    /// 获取字段大小和精度定义
+    /// </summary>
+    /// <param name="Property">属性类对象</param>
+    /// <returns>返回字段大小和精度定义</returns>
+    public static string GetColumnSize(Property property)
+    {
+        string tmpstr = "";
+        
+        switch(property.DbType)
+        {
+            case "NCHAR":
+                tmpstr += "(" + property.Size + " BYTE)";
+                break;
+            case "NUMBER":
+                tmpstr += "(" + property.Precision + "," + property.Scale + ")";
+                break;
+            case "NVARCHAR2":
+                tmpstr += "(" + property.Size + " BYTE)";
+                break;
+            case "VARCHAR2":
+                tmpstr += "(" + property.Size + " BYTE)";
+                break;
+			case "BFILE":
+            case "BLOB":
+            case "CHAR":
+            case "CLOB":
+            case "DATE":
+            case "FLOAT":
+            case "INTEGER":
+            case "LONG":
+            case "NCLOB":
+            case "RAW":
+            case "ROWID":
+            case "UROWID":
+            case "TIMESTAMP":
+            default:
+                break;
+        }
+        return tmpstr;
+    }
+    
+    /// <summary>
+    /// 返回指定字段的JdbcTtype
+    /// </summary>
+    /// <param name="properties">字段属性集合</param>
+    /// <param name="fieldName">字段名</param>
+    /// <returns></returns>
+    public static string GetFieldJdbcType(PropertyCollection properties,string fieldName)
+    {
+        for(int i=0;i<properties.Count;i++){
+            if(fieldName == properties[i].Name)
+            {
+                return properties[i].DbType;
+            }
+        }
+        
+        return "___UNKNOWFIELD___";
+    }
+    
+    /// <summary>
+    /// 返回指定字段的JavaTtype
+    /// </summary>
+    /// <param name="properties">字段属性集合</param>
+    /// <param name="fieldName">字段名</param>
+    /// <returns></returns>
+    public static string GetFieldJavaType(PropertyCollection properties,string fieldName)
+    {
+        for(int i=0;i<properties.Count;i++){
+            if(fieldName == properties[i].Name)
+            {
+                return properties[i].JavaType;
+            }
+        }
+        
+        return "___UNKNOWFIELD___";
+    }
+</script>

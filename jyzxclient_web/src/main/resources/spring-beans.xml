@@ -5,10 +5,24 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans 
 		http://www.springframework.org/schema/beans/spring-beans-4.1.xsd">
 	
-	
-	
 	<bean id="systemSetting" class="com.xiaocui.settings.SystemSetting">
-		<property name="companyCode" value="${companyCode}" />
+		<property name="companyCode" value="${company_code}" />
+		<property name="authCode" value="${auth_code}" />
+		<property name="cer" value="${cer}" />
+		<property name="jks" value="${jks}" />
+		<property name="institutionCode" value="${institution_code}" />
 	</bean>
+	
+	<bean id="client" class="com.xiaocui.webservice.impl.HelloWorldImpl" factory-bean="clientFactory" factory-method="create"/>
+	    <bean id="clientFactory" class="org.apache.cxf.jaxws.JaxWsProxyFactoryBean">
+        <property name="serviceClass" value="com.xiaocui.webservice.HelloWorld"/>
+        <property name="address" value="http://localhost:9080/jyzxclient_web/services/HelloWorld?wsdl"/>
+    </bean>
+
+	<bean id="clientTwo" class="com.xiaocui.webservice.impl.SearchServiceImpl" factory-bean="clientFactoryTwo" factory-method="create"/>
+	    <bean id="clientFactoryTwo" class="org.apache.cxf.jaxws.JaxWsProxyFactoryBean">
+        <property name="serviceClass" value="com.xiaocui.webservice.SearchService"/>
+        <property name="address" value="http://localhost:9080/jyzxclient_web/services/SearchService?wsdl"/>
+    </bean>	
 	
 </beans>

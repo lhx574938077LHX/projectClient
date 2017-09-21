@@ -1,0 +1,288 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaocui.platform.dao.search.JoinConditionMapper" >
+  <resultMap id="BaseResultMap" type="com.xiaocui.platform.model.search.JoinCondition" >
+    <id column="ID" property="id" jdbcType="DECIMAL" />
+    <result column="COMPANY_ID" property="companyId" jdbcType="DECIMAL" />
+    <result column="START_TIME" property="startTime" jdbcType="DECIMAL" />
+    <result column="END_TIME" property="endTime" jdbcType="DECIMAL" />
+    <result column="JOIN_STATE" property="joinState" jdbcType="SMALLINT" />
+    <result column="TIME_INFORMATION" property="timeInformation" jdbcType="VARCHAR" />
+    <result column="REMARK" property="remark" jdbcType="VARCHAR" />
+    <result column="BD_NAME" property="bdName" jdbcType="VARCHAR" />
+    <result column="CLIENT_EMAIL" property="clientEmail" jdbcType="VARCHAR" />
+    <result column="UPDATE_TIME" property="updateTime" jdbcType="DECIMAL" />
+    <result column="IS_P3001" property="isP3001" jdbcType="SMALLINT" />
+    <result column="REC_TIME" property="recTime" jdbcType="DECIMAL" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID,
+    COMPANY_ID,
+    START_TIME,
+    END_TIME,
+    JOIN_STATE,
+    TIME_INFORMATION,
+    REMARK,
+    BD_NAME,
+    CLIENT_EMAIL,
+    UPDATE_TIME,
+    IS_P3001,
+    REC_TIME
+  </sql>
+  <sql id= "TABLE_SEQ">
+    JOIN_CONDITION_ID_SEQUENCE.NEXTVAL
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    SELECT 
+    <include refid="Base_Column_List" />
+    FROM JOIN_CONDITION
+    WHERE ID = #{id,jdbcType=DECIMAL}
+  </select>
+  <select id= "selectList" resultMap ="BaseResultMap" parameterType= "java.util.Map" >
+		SELECT
+		<include refid ="Base_Column_List" />
+		 FROM ( SELECT t.*,rownum r FROM
+		( SELECT * FROM JOIN_CONDITION 
+			<if test ="condition != null">
+			WHERE ${condition}
+			</if >
+			<if test ="orderBy != null">
+					ORDER BY ${orderBy}
+			</if >
+		) t ) WHERE 1=1
+			<if test ="start != null">
+					AND r &gt; ${start}
+			</if >
+			<if test ="end != null">
+					AND r &lt;= ${end}
+			</if >
+	</select>
+  	<select id= "selectOne" resultMap ="BaseResultMap" parameterType= "java.util.Map" >
+		SELECT
+		<include refid ="Base_Column_List" />
+		  FROM JOIN_CONDITION  
+			<if test ="_parameter != null">
+			WHERE ${_parameter} AND rownum = 1
+			</if >
+	</select>
+    <select id= "selectCount" resultType ="java.lang.Long" parameterType= "java.lang.String" >
+		SELECT
+			COUNT(ID)
+		 FROM JOIN_CONDITION 
+		 <if test ="_parameter != null">
+			WHERE ${_parameter}
+		 </if >
+	</select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    DELETE FROM JOIN_CONDITION
+    WHERE ID = #{id,jdbcType=DECIMAL}
+  </delete>
+  <delete id="deleteByCondition" parameterType="java.lang.String" >
+    DELETE  FROM JOIN_CONDITION
+    WHERE ${_parameter}
+  </delete>
+  <insert id="insert" parameterType="com.xiaocui.platform.model.search.JoinCondition" >
+    <selectKey keyProperty= "id" resultType ="java.lang.Long" order= "BEFORE">
+        SELECT <include refid ="TABLE_SEQ" /> FROM dual
+    </selectKey>
+    INSERT INTO JOIN_CONDITION (
+        ID,
+        COMPANY_ID,
+        START_TIME,
+        END_TIME,
+        JOIN_STATE,
+        TIME_INFORMATION,
+        REMARK,
+        BD_NAME,
+        CLIENT_EMAIL,
+        UPDATE_TIME,
+        IS_P3001,
+        REC_TIME
+      )
+    VALUES (
+        #{id,jdbcType=DECIMAL},
+        #{companyId,jdbcType=DECIMAL},
+        #{startTime,jdbcType=DECIMAL},
+        #{endTime,jdbcType=DECIMAL},
+        #{joinState,jdbcType=SMALLINT},
+        #{timeInformation,jdbcType=VARCHAR},
+        #{remark,jdbcType=VARCHAR},
+        #{bdName,jdbcType=VARCHAR},
+        #{clientEmail,jdbcType=VARCHAR},
+        #{updateTime,jdbcType=DECIMAL},
+        #{isP3001,jdbcType=SMALLINT},
+        #{recTime,jdbcType=DECIMAL}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.xiaocui.platform.model.search.JoinCondition" >
+    <selectKey keyProperty= "id" resultType ="java.lang.Long" order= "BEFORE">
+        SELECT <include refid ="TABLE_SEQ" /> from dual
+    </selectKey>
+    INSERT INTO JOIN_CONDITION
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="companyId != null" >
+        COMPANY_ID,
+      </if>
+      <if test="startTime != null" >
+        START_TIME,
+      </if>
+      <if test="endTime != null" >
+        END_TIME,
+      </if>
+      <if test="joinState != null" >
+        JOIN_STATE,
+      </if>
+      <if test="timeInformation != null" >
+        TIME_INFORMATION,
+      </if>
+      <if test="remark != null" >
+        REMARK,
+      </if>
+      <if test="bdName != null" >
+        BD_NAME,
+      </if>
+      <if test="clientEmail != null" >
+        CLIENT_EMAIL,
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME,
+      </if>
+      <if test="isP3001 != null" >
+        IS_P3001,
+      </if>
+      <if test="recTime != null" >
+        REC_TIME,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=DECIMAL},
+      </if>
+      <if test="companyId != null" >
+        #{companyId,jdbcType=DECIMAL},
+      </if>
+      <if test="startTime != null" >
+        #{startTime,jdbcType=DECIMAL},
+      </if>
+      <if test="endTime != null" >
+        #{endTime,jdbcType=DECIMAL},
+      </if>
+      <if test="joinState != null" >
+        #{joinState,jdbcType=SMALLINT},
+      </if>
+      <if test="timeInformation != null" >
+        #{timeInformation,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="bdName != null" >
+        #{bdName,jdbcType=VARCHAR},
+      </if>
+      <if test="clientEmail != null" >
+        #{clientEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=DECIMAL},
+      </if>
+      <if test="isP3001 != null" >
+        #{isP3001,jdbcType=SMALLINT},
+      </if>
+      <if test="recTime != null" >
+        #{recTime,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xiaocui.platform.model.search.JoinCondition" >
+    UPDATE JOIN_CONDITION
+    <set >
+      <if test="id != null" >
+        ID = #{id,jdbcType=DECIMAL},
+      </if>
+      <if test="companyId != null" >
+        COMPANY_ID = #{companyId,jdbcType=DECIMAL},
+      </if>
+      <if test="startTime != null" >
+        START_TIME = #{startTime,jdbcType=DECIMAL},
+      </if>
+      <if test="endTime != null" >
+        END_TIME = #{endTime,jdbcType=DECIMAL},
+      </if>
+      <if test="joinState != null" >
+        JOIN_STATE = #{joinState,jdbcType=SMALLINT},
+      </if>
+      <if test="timeInformation != null" >
+        TIME_INFORMATION = #{timeInformation,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        REMARK = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="bdName != null" >
+        BD_NAME = #{bdName,jdbcType=VARCHAR},
+      </if>
+      <if test="clientEmail != null" >
+        CLIENT_EMAIL = #{clientEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME = #{updateTime,jdbcType=DECIMAL},
+      </if>
+      <if test="isP3001 != null" >
+        IS_P3001 = #{isP3001,jdbcType=SMALLINT},
+      </if>
+      <if test="recTime != null" >
+        REC_TIME = #{recTime,jdbcType=DECIMAL}
+      </if>
+    </set>
+    WHERE ID = #{id,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xiaocui.platform.model.search.JoinCondition" >
+    UPDATE JOIN_CONDITION SET 
+      <if test="companyId != null" >
+        COMPANY_ID = #{companyId,jdbcType=DECIMAL},
+      </if>
+      <if test="startTime != null" >
+        START_TIME = #{startTime,jdbcType=DECIMAL},
+      </if>
+      <if test="endTime != null" >
+        END_TIME = #{endTime,jdbcType=DECIMAL},
+      </if>
+      <if test="joinState != null" >
+        JOIN_STATE = #{joinState,jdbcType=SMALLINT},
+      </if>
+      <if test="timeInformation != null" >
+        TIME_INFORMATION = #{timeInformation,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        REMARK = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="bdName != null" >
+        BD_NAME = #{bdName,jdbcType=VARCHAR},
+      </if>
+      <if test="clientEmail != null" >
+        CLIENT_EMAIL = #{clientEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME = #{updateTime,jdbcType=DECIMAL},
+      </if>
+      <if test="isP3001 != null" >
+        IS_P3001 = #{isP3001,jdbcType=SMALLINT},
+      </if>
+      <if test="recTime != null" >
+        REC_TIME = #{recTime,jdbcType=DECIMAL}
+      </if>
+    WHERE ID = #{id,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByCondition"  parameterType="java.util.Map" >
+    UPDATE JOIN_CONDITION SET 
+       <if test="set != null">
+       	${set}
+       </if>
+    WHERE 
+		<if test="condition != null">
+			${condition}
+		</if>
+  </update>
+</mapper>
